@@ -2,833 +2,1075 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dr. B.K. Mahato — Life Transformation Dashboard</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="CS_MIB-Icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Dr. B.K. Mahato — Life Dashboard</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Life Dashboard">
+    <link rel="apple-touch-icon" href="icon-180.png">
+    <link rel="manifest" href="manifest.json">
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #0a0e1a;
             color: #e2e8f0;
             min-height: 100vh;
-            padding: 12px 12px 100px;
+            padding: 12px 12px 90px;
             max-width: 480px;
             margin: 0 auto;
+            overscroll-behavior: none;
         }
-        /* --- Scrollbar --- */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
 
         /* --- Header --- */
-        .header {
-            text-align: center;
-            padding: 16px 0 8px;
-            margin-bottom: 12px;
-        }
-        .header h1 { font-size: 14px; color: #94a3b8; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; }
-        .time-display { font-size: 42px; font-weight: 700; color: #f8fafc; line-height: 1.1; margin: 4px 0; }
-        .greeting { font-size: 16px; color: #60a5fa; margin-bottom: 6px; }
+        .header { text-align: center; padding: 12px 0 6px; margin-bottom: 10px; }
+        .header h1 { font-size: 13px; color: #94a3b8; font-weight: 400; letter-spacing: 2px; }
+        .greeting { font-size: 15px; color: #60a5fa; font-weight: 500; }
+        .time-display { font-size: 40px; font-weight: 700; color: #f8fafc; line-height: 1.1; }
         .date-display { font-size: 12px; color: #64748b; }
 
-        /* --- Gita Verse --- */
+        /* --- Gita --- */
         .gita-card {
             background: linear-gradient(135deg, #1e293b, #0f172a);
             border: 1px solid #334155;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 14px;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
             text-align: center;
         }
-        .gita-card .sanskrit { font-size: 16px; color: #fbbf24; font-style: italic; margin-bottom: 8px; line-height: 1.6; }
-        .gita-card .translation { font-size: 13px; color: #cbd5e1; line-height: 1.5; }
-        .gita-card .ref { font-size: 11px; color: #64748b; margin-top: 6px; }
+        .gita-card .sanskrit { font-size: 15px; color: #fbbf24; font-style: italic; margin-bottom: 6px; line-height: 1.5; }
+        .gita-card .translation { font-size: 12px; color: #cbd5e1; line-height: 1.5; }
+        .gita-card .ref { font-size: 10px; color: #64748b; margin-top: 4px; }
 
-        /* --- Motivational Quote --- */
+        /* --- Motivation --- */
         .motivation-bar {
             background: linear-gradient(90deg, #1e3a5f, #0f172a);
             border-left: 3px solid #60a5fa;
             border-radius: 8px;
-            padding: 10px 14px;
-            margin-bottom: 14px;
-            font-size: 13px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            font-size: 12px;
             color: #93c5fd;
             font-style: italic;
+            line-height: 1.4;
         }
 
         /* --- Section Title --- */
         .section-title {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: #f1f5f9;
-            margin: 16px 0 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin: 14px 0 8px;
         }
-        .section-title span { font-size: 16px; }
 
         /* --- Stats Grid --- */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 6px;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
         .stat-card {
             background: #1e293b;
             border-radius: 10px;
-            padding: 10px 6px;
+            padding: 10px 4px;
             text-align: center;
             border: 1px solid #2d3a50;
         }
         .stat-card .num { font-size: 20px; font-weight: 700; color: #60a5fa; }
-        .stat-card .label { font-size: 9px; color: #94a3b8; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
+        .stat-card .label { font-size: 9px; color: #94a3b8; margin-top: 2px; }
 
-        /* --- Schedule --- */
-        .schedule-day {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            margin-bottom: 12px;
-        }
+        /* --- Schedule Blocks --- */
+        .schedule-day { display: flex; flex-direction: column; gap: 3px; margin-bottom: 10px; }
         .time-block {
-            display: flex;
-            align-items: center;
-            background: #111827;
-            border-radius: 10px;
-            padding: 10px 12px;
-            border: 1px solid #1e293b;
-            gap: 10px;
-            transition: all 0.2s;
+            display: flex; align-items: center;
+            background: #111827; border-radius: 8px;
+            padding: 8px 10px; border: 1px solid #1e293b;
+            gap: 8px; cursor: pointer; transition: 0.15s;
         }
-        .time-block.active {
-            border-color: #60a5fa;
-            background: #1a2744;
-            box-shadow: 0 0 12px rgba(96,165,250,0.15);
+        .time-block.active { border-color: #60a5fa; background: #1a2744; }
+        .time-block .time { font-size: 10px; color: #64748b; min-width: 44px; font-weight: 600; }
+        .time-block .activity { flex: 1; font-size: 12px; }
+        .time-block .activity .sub { font-size: 9px; color: #94a3b8; }
+        .block-check {
+            width: 18px; height: 18px; border-radius: 4px;
+            border: 2px solid #475569; background: transparent;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
         }
-        .time-block.past { opacity: 0.5; }
-        .time-block .time { font-size: 11px; color: #64748b; min-width: 48px; font-weight: 600; }
-        .time-block .activity { flex: 1; font-size: 13px; color: #e2e8f0; }
-        .time-block .activity .sub { font-size: 10px; color: #94a3b8; display: block; }
-        .time-block .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-        .time-block .status-dot.pending { background: #334155; }
-        .time-block .status-dot.done { background: #22c55e; }
-        .time-block .status-dot.current { background: #60a5fa; animation: pulse 1.5s infinite; }
-        .time-block .status-dot.missed { background: #ef4444; }
-        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-        .block-check { width: 18px; height: 18px; border-radius: 4px; border: 2px solid #475569; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.2s; }
-        .block-check.checked { background: #22c55e; border-color: #22c55e; }
-        .block-check.checked::after { content: '✓'; color: #fff; font-size: 12px; font-weight: 700; }
+        .block-check.done { background: #22c55e; border-color: #22c55e; }
+        .block-check.done::after { content: '✓'; color: #fff; font-size: 12px; font-weight: 700; }
 
         /* --- Pomodoro --- */
         .pomo-card {
             background: linear-gradient(135deg, #1e293b, #0f172a);
             border: 1px solid #334155;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 14px;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 12px;
             text-align: center;
         }
-        .pomo-timer {
-            font-size: 56px;
-            font-weight: 700;
-            color: #f8fafc;
-            font-variant-numeric: tabular-nums;
-            margin: 8px 0;
-        }
-        .pomo-timer.work { color: #60a5fa; }
-        .pomo-timer.break { color: #22c55e; }
-        .pomo-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; }
-        .pomo-controls { display: flex; justify-content: center; gap: 12px; margin-top: 12px; }
+        .pomo-timer { font-size: 52px; font-weight: 700; margin: 6px 0; }
+        .pomo-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; }
+        .pomo-controls { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
         .pomo-btn {
-            padding: 10px 24px;
-            border-radius: 10px;
-            border: none;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
+            padding: 8px 22px; border-radius: 10px; border: none;
+            font-size: 13px; font-weight: 600; cursor: pointer;
         }
         .pomo-btn.start { background: #2563eb; color: #fff; }
-        .pomo-btn.start:hover { background: #1d4ed8; }
         .pomo-btn.reset { background: #334155; color: #94a3b8; }
-        .pomo-btn.reset:hover { background: #475569; }
         .pomo-btn:active { transform: scale(0.95); }
-        .pomo-sessions { font-size: 12px; color: #64748b; margin-top: 8px; }
 
-        /* --- Task Manager (Eisenhower) --- */
+        /* --- Tasks (Eisenhower) --- */
         .eisenhower-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            margin-bottom: 14px;
+            gap: 5px;
+            margin-bottom: 12px;
         }
         .quadrant {
-            background: #111827;
-            border-radius: 10px;
-            padding: 10px;
-            border: 1px solid #1e293b;
-            min-height: 100px;
+            background: #111827; border-radius: 8px;
+            padding: 8px; border: 1px solid #1e293b;
+            min-height: 80px;
         }
-        .quadrant h4 { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-        .quadrant.q1 { border-top: 3px solid #ef4444; }
-        .quadrant.q1 h4 { color: #ef4444; }
-        .quadrant.q2 { border-top: 3px solid #60a5fa; }
-        .quadrant.q2 h4 { color: #60a5fa; }
-        .quadrant.q3 { border-top: 3px solid #f59e0b; }
-        .quadrant.q3 h4 { color: #f59e0b; }
-        .quadrant.q4 { border-top: 3px solid #64748b; }
-        .quadrant.q4 h4 { color: #64748b; }
+        .quadrant h4 { font-size: 9px; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+        .quadrant.q1 { border-top: 3px solid #ef4444; } .quadrant.q1 h4 { color: #ef4444; }
+        .quadrant.q2 { border-top: 3px solid #60a5fa; } .quadrant.q2 h4 { color: #60a5fa; }
+        .quadrant.q3 { border-top: 3px solid #f59e0b; } .quadrant.q3 h4 { color: #f59e0b; }
+        .quadrant.q4 { border-top: 3px solid #64748b; } .quadrant.q4 h4 { color: #64748b; }
 
         .task-item {
-            background: #1e293b;
-            border-radius: 6px;
-            padding: 6px 8px;
-            margin-bottom: 4px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            transition: 0.15s;
+            background: #1e293b; border-radius: 5px;
+            padding: 5px 6px; margin-bottom: 3px;
+            font-size: 11px; display: flex; align-items: center; gap: 4px;
+            cursor: pointer; transition: 0.1s;
         }
-        .task-item.done { opacity: 0.5; text-decoration: line-through; }
-        .task-item .task-check { width: 14px; height: 14px; border-radius: 3px; border: 2px solid #475569; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-        .task-item .task-check.checked { background: #22c55e; border-color: #22c55e; }
-        .task-item .task-check.checked::after { content: '✓'; color: #fff; font-size: 9px; font-weight: 700; }
-        .task-item .del-task { margin-left: auto; color: #ef4444; font-size: 14px; cursor: pointer; opacity: 0.5; }
-        .task-item .del-task:hover { opacity: 1; }
+        .task-item.done { opacity: 0.4; text-decoration: line-through; }
+        .task-item .del { margin-left: auto; color: #ef4444; font-size: 12px; cursor: pointer; }
 
         .add-task-form {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 10px;
+            display: flex; gap: 5px; margin-bottom: 8px;
         }
         .add-task-form input {
-            flex: 1;
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 8px 10px;
-            color: #e2e8f0;
-            font-size: 13px;
-            outline: none;
+            flex: 1; background: #1e293b; border: 1px solid #334155;
+            border-radius: 8px; padding: 8px 10px; color: #e2e8f0;
+            font-size: 12px; outline: none;
         }
         .add-task-form input:focus { border-color: #60a5fa; }
         .add-task-form select {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 8px;
-            color: #e2e8f0;
-            font-size: 11px;
-            outline: none;
+            background: #1e293b; border: 1px solid #334155;
+            border-radius: 8px; padding: 6px; color: #e2e8f0; font-size: 10px;
         }
         .add-task-form button {
-            background: #2563eb;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 14px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
+            background: #2563eb; color: #fff; border: none;
+            border-radius: 8px; padding: 8px 12px; font-size: 12px; font-weight: 600;
+            cursor: pointer; white-space: nowrap;
         }
-        .add-task-form button:active { transform: scale(0.95); }
 
-        /* --- Health --- */
+        /* --- Health Grid --- */
         .health-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 14px;
+            gap: 6px;
+            margin-bottom: 12px;
         }
         .health-item {
-            background: #111827;
-            border-radius: 10px;
-            padding: 12px;
-            border: 1px solid #1e293b;
+            background: #111827; border-radius: 8px;
+            padding: 10px; border: 1px solid #1e293b;
         }
-        .health-item .label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
-        .health-item .value { font-size: 16px; font-weight: 600; color: #f1f5f9; }
-        .health-item .unit { font-size: 11px; color: #64748b; }
-        .health-item .action-btn {
-            margin-top: 6px;
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            padding: 6px 12px;
-            color: #60a5fa;
-            font-size: 11px;
-            cursor: pointer;
-            width: 100%;
+        .health-item .label { font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.3px; }
+        .health-item .value { font-size: 15px; font-weight: 600; color: #f1f5f9; }
+        .health-item .unit { font-size: 10px; color: #64748b; }
+        .health-item .small-btn {
+            margin-top: 4px; background: #1e293b; border: 1px solid #334155;
+            border-radius: 5px; padding: 5px 10px; color: #60a5fa;
+            font-size: 10px; cursor: pointer; width: 100%;
         }
-        .health-item .action-btn.taken { background: #064e3b; border-color: #22c55e; color: #22c55e; }
+        .health-item .small-btn.done { background: #064e3b; border-color: #22c55e; color: #22c55e; }
 
-        /* --- User Input --- */
-        .user-input-group {
-            display: flex;
-            gap: 6px;
-            margin-top: 4px;
+        /* --- Forms --- */
+        .input-row {
+            display: flex; gap: 5px; margin-top: 4px;
         }
-        .user-input-group input, .user-input-group select {
-            flex: 1;
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            padding: 6px 8px;
-            color: #e2e8f0;
-            font-size: 12px;
-            outline: none;
+        .input-row input, .input-row select {
+            flex: 1; background: #1e293b; border: 1px solid #334155;
+            border-radius: 5px; padding: 5px 6px; color: #e2e8f0;
+            font-size: 11px; outline: none;
         }
-        .user-input-group input:focus { border-color: #60a5fa; }
+        .input-row input:focus { border-color: #60a5fa; }
 
-        /* --- Distraction Log --- */
-        .distraction-form {
-            background: #111827;
-            border-radius: 10px;
-            padding: 12px;
-            border: 1px solid #1e293b;
-            margin-bottom: 14px;
+        textarea {
+            width: 100%; background: #1e293b; border: 1px solid #334155;
+            border-radius: 8px; padding: 8px 10px; color: #e2e8f0;
+            font-size: 12px; outline: none; resize: vertical;
+            min-height: 40px; font-family: inherit;
         }
-        .distraction-form textarea {
-            width: 100%;
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 8px 10px;
-            color: #e2e8f0;
-            font-size: 12px;
-            outline: none;
-            resize: vertical;
-            min-height: 50px;
-            font-family: inherit;
-        }
-        .distraction-form textarea:focus { border-color: #60a5fa; }
+        textarea:focus { border-color: #60a5fa; }
 
-        /* --- Buttons --- */
-        .btn-primary {
+        .btn-p { 
             background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 12px 20px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: 0.2s;
+            color: #fff; border: none; border-radius: 10px;
+            padding: 10px 16px; font-size: 13px; font-weight: 600;
+            cursor: pointer; width: 100%;
         }
-        .btn-primary:active { transform: scale(0.97); }
-        .btn-secondary {
-            background: #1e293b;
-            color: #94a3b8;
-            border: 1px solid #334155;
-            border-radius: 10px;
-            padding: 10px 16px;
-            font-size: 12px;
-            cursor: pointer;
-            width: 100%;
+        .btn-p:active { transform: scale(0.97); }
+        .btn-s {
+            background: #1e293b; color: #94a3b8;
+            border: 1px solid #334155; border-radius: 10px;
+            padding: 8px 14px; font-size: 11px; cursor: pointer; width: 100%;
         }
 
         /* --- Log View --- */
-        .log-list {
-            max-height: 200px;
-            overflow-y: auto;
-            background: #111827;
-            border-radius: 10px;
-            padding: 8px;
-            margin-bottom: 14px;
+        .log-view {
+            background: #111827; border-radius: 8px;
+            padding: 8px; margin-bottom: 10px;
+            max-height: 150px; overflow-y: auto;
         }
         .log-entry {
-            font-size: 11px;
-            padding: 6px 8px;
-            border-bottom: 1px solid #1e293b;
-            color: #94a3b8;
+            font-size: 10px; padding: 4px 6px;
+            border-bottom: 1px solid #1e293b; color: #94a3b8;
         }
         .log-entry:last-child { border-bottom: none; }
-        .log-entry .log-time { color: #64748b; font-size: 10px; }
 
-        /* --- Google Sheet Config --- */
-        .config-section {
-            background: #111827;
-            border-radius: 10px;
-            padding: 12px;
-            border: 1px solid #1e293b;
-            margin-bottom: 14px;
-        }
-        .config-section input {
-            width: 100%;
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            padding: 8px 10px;
-            color: #e2e8f0;
-            font-size: 12px;
-            outline: none;
-            margin-bottom: 6px;
-        }
-        .config-section input:focus { border-color: #60a5fa; }
-
-        /* --- Tabs --- */
-        .tab-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #0f172a;
-            border-top: 1px solid #1e293b;
-            display: flex;
-            padding: 6px 0 env(safe-area-inset-bottom, 6px);
-            z-index: 100;
-            max-width: 480px;
-            margin: 0 auto;
-        }
-        .tab-item {
-            flex: 1;
-            text-align: center;
-            padding: 6px 4px;
-            cursor: pointer;
-            transition: 0.2s;
-            border: none;
-            background: none;
-            color: #64748b;
-        }
-        .tab-item.active { color: #60a5fa; }
-        .tab-item .tab-icon { font-size: 20px; display: block; }
-        .tab-item .tab-label { font-size: 9px; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* --- Insights --- */
-        .insight-card {
+        /* --- Insight Card --- */
+        .insight-box {
             background: linear-gradient(135deg, #1e3a5f, #0f172a);
             border: 1px solid #2d4a7a;
-            border-radius: 12px;
-            padding: 14px;
+            border-radius: 10px;
+            padding: 12px;
             margin-bottom: 10px;
         }
-        .insight-card .title { font-size: 13px; font-weight: 600; color: #93c5fd; margin-bottom: 4px; }
-        .insight-card .text { font-size: 12px; color: #cbd5e1; line-height: 1.5; }
+        .insight-box .title { font-size: 12px; font-weight: 600; color: #93c5fd; }
+        .insight-box .text { font-size: 11px; color: #cbd5e1; line-height: 1.5; margin-top: 4px; }
 
-        /* --- Misc --- */
-        .flex-row { display: flex; gap: 8px; align-items: center; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; }
-        .mt-8 { margin-top: 8px; }
-        .mb-8 { margin-bottom: 8px; }
-        .text-center { text-align: center; }
-        .text-xs { font-size: 11px; color: #64748b; }
-        .gap-4 { gap: 4px; }
-        .hidden { display: none; }
+        /* --- Progress --- */
+        .progress-wrap {
+            background: #1e293b; border-radius: 8px; height: 8px;
+            overflow: hidden; margin-top: 4px;
+        }
+        .progress-fill {
+            height: 100%; border-radius: 8px;
+            background: linear-gradient(90deg, #2563eb, #22c55e);
+            transition: width 0.4s;
+        }
 
-        .water-glass {
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-            cursor: pointer;
-        }
-        .water-glass .glass { font-size: 18px; opacity: 0.3; }
-        .water-glass .glass.filled { opacity: 1; }
+        /* --- Flex / Spacing --- */
+        .flex { display: flex; gap: 6px; align-items: center; }
+        .flex-sb { display: flex; justify-content: space-between; align-items: center; }
+        .mt-6 { margin-top: 6px; }
+        .mb-6 { margin-bottom: 6px; }
+        .text-xs { font-size: 10px; color: #64748b; }
+        .text-sm { font-size: 11px; color: #94a3b8; }
+        .gap-2 { gap: 2px; }
 
-        .sugar-input-group {
-            display: flex;
-            gap: 6px;
-            align-items: center;
+        /* --- Tab Bar --- */
+        .tab-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #0f172a; border-top: 1px solid #1e293b;
+            display: flex; padding: 4px 0 calc(4px + env(safe-area-inset-bottom, 4px));
+            z-index: 100; max-width: 480px; margin: 0 auto;
         }
-        .streak-badge {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #1c1917;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 10px;
+        .tab-item {
+            flex: 1; text-align: center; padding: 4px 2px;
+            cursor: pointer; border: none; background: none; color: #64748b;
+            font-size: 9px; transition: 0.15s;
         }
+        .tab-item.active { color: #60a5fa; }
+        .tab-item .tab-icon { font-size: 18px; display: block; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
 <body>
 
-<!----------------------------------------->
-<!-- HEADER -->
-<!----------------------------------------->
+<!-- ===== HEADER ===== -->
 <div class="header">
     <h1>🔥 Life Transformation Dashboard</h1>
     <div class="greeting" id="greeting">Good Morning, Dr. Mahato</div>
     <div class="time-display" id="currentTime">00:00</div>
-    <div class="date-display" id="currentDate">Loading...</div>
+    <div class="date-display" id="currentDate">&nbsp;</div>
 </div>
 
-<!----------------------------------------->
-<!-- TAB BAR -->
-<!----------------------------------------->
-<div class="tab-bar">
-    <button class="tab-item active" data-tab="tab-dashboard">
-        <span class="tab-icon">📊</span>
-        <span class="tab-label">Dashboard</span>
-    </button>
-    <button class="tab-item" data-tab="tab-schedule">
-        <span class="tab-icon">📋</span>
-        <span class="tab-label">Schedule</span>
-    </button>
-    <button class="tab-item" data-tab="tab-pomodoro">
-        <span class="tab-icon">🍅</span>
-        <span class="tab-label">Pomodoro</span>
-    </button>
-    <button class="tab-item" data-tab="tab-tasks">
-        <span class="tab-icon">✅</span>
-        <span class="tab-label">Tasks</span>
-    </button>
-    <button class="tab-item" data-tab="tab-health">
-        <span class="tab-icon">🩺</span>
-        <span class="tab-label">Health</span>
-    </button>
-    <button class="tab-item" data-tab="tab-settings">
-        <span class="tab-icon">⚙️</span>
-        <span class="tab-label">Settings</span>
-    </button>
-</div>
+<!-- ===== TAB VIEWS ===== -->
 
-<!----------------------------------------->
-<!-- TAB: DASHBOARD -->
-<!----------------------------------------->
+<!-- --- DASHBOARD TAB --- -->
 <div id="tab-dashboard" class="tab-content active">
-
-    <!-- Gita Verse -->
     <div class="gita-card" id="gitaCard">
-        <div class="sanskrit" id="gitaSanskrit">Loading...</div>
-        <div class="translation" id="gitaTranslation">Loading...</div>
-        <div class="ref" id="gitaRef">— Bhagavad Gita</div>
+        <div class="sanskrit" id="gitaS">Loading...</div>
+        <div class="translation" id="gitaT">Loading...</div>
+        <div class="ref" id="gitaR">— BG</div>
     </div>
-
-    <!-- Motivation -->
-    <div class="motivation-bar" id="motivationQuote">"Discipline is choosing between what you want now and what you want most."</div>
-
-    <!-- Quick Stats -->
+    <div class="motivation-bar" id="motQuote">"Discipline is choosing between what you want now and what you want most."</div>
+    
     <div class="stats-grid">
-        <div class="stat-card">
-            <div class="num" id="statStreak">0</div>
-            <div class="label">Day Streak 🔥</div>
-        </div>
-        <div class="stat-card">
-            <div class="num" id="statTasksDone">0</div>
-            <div class="label">Tasks ✅</div>
-        </div>
-        <div class="stat-card">
-            <div class="num" id="statPomos">0</div>
-            <div class="label">Pomodoros 🍅</div>
-        </div>
-        <div class="stat-card">
-            <div class="num" id="statWater">0</div>
-            <div class="label">Water 💧</div>
-        </div>
+        <div class="stat-card"><div class="num" id="sStreak">0</div><div class="label">🔥 Streak</div></div>
+        <div class="stat-card"><div class="num" id="sTasks">0</div><div class="label">✅ Tasks</div></div>
+        <div class="stat-card"><div class="num" id="sPomos">0</div><div class="label">🍅 Pomos</div></div>
+        <div class="stat-card"><div class="num" id="sWater">0</div><div class="label">💧 Water</div></div>
     </div>
 
-    <!-- Current Block -->
-    <div class="section-title"><span>⏰</span> Current Activity</div>
-    <div class="time-block active" id="currentBlockDisplay">
-        <div class="time" id="currentBlockTime">--:--</div>
-        <div class="activity" id="currentBlockActivity">Loading your schedule...</div>
-        <div class="status-dot current"></div>
+    <div class="section-title">⏰ Current Activity</div>
+    <div class="time-block active" id="currentBlock" style="margin-bottom:10px;">
+        <div class="time" id="cbTime">--</div>
+        <div class="activity" id="cbAct">Loading...</div>
     </div>
 
-    <!-- Today's Progress -->
-    <div class="section-title"><span>📈</span> Today's Progress</div>
-    <div class="insight-card">
-        <div class="flex-between">
-            <span class="title">Blocks Completed</span>
-            <span id="progressBlocks">0 / 12</span>
-        </div>
-        <div style="background:#1e293b;border-radius:8px;height:8px;margin-top:6px;overflow:hidden;">
-            <div id="progressBar" style="background:linear-gradient(90deg,#2563eb,#22c55e);height:100%;width:0%;border-radius:8px;transition:width 0.5s;"></div>
-        </div>
-        <div class="text-xs mt-8">Medicines: <span id="medStatus">Not taken</span> &nbsp;|&nbsp; Sugar: <span id="sugarStatus">Not logged</span></div>
+    <div class="section-title">📈 Today's Progress</div>
+    <div class="insight-box">
+        <div class="flex-sb"><span class="title">Blocks Done</span><span id="progressLabel">0 / 11</span></div>
+        <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <div class="text-xs mt-6">💊 Meds: <span id="medStatus">0/2</span> &nbsp;|&nbsp; 🩸 Sugar: <span id="sugarStatus">--</span></div>
     </div>
 
-    <!-- Quick Log Today -->
-    <div class="distraction-form">
-        <div class="flex-between mb-8">
-            <span style="font-size:13px;font-weight:600;">📝 Today's Reflection</span>
-        </div>
-        <textarea id="dailyReflection" placeholder="What did I achieve today? What distracted me? What desires pulled me away? Be honest with yourself..."></textarea>
-        <button class="btn-primary mt-8" onclick="logDailyReflection()">✍️ Save Reflection + Log to Sheet</button>
-    </div>
+    <div class="section-title">📝 Today's Reflection</div>
+    <textarea id="dailyReflect" placeholder="What did I achieve today? What distracted me? Be honest..."></textarea>
+    <button class="btn-p mt-6 mb-6" onclick="logReflection()">✍️ Save & Log to Sheet</button>
 
-    <!-- Insights -->
-    <div class="section-title"><span>💡</span> Daily Insight</div>
-    <div class="insight-card" id="dailyInsight">
+    <div class="section-title">💡 Daily Insight</div>
+    <div class="insight-box">
         <div class="title">Your Journey</div>
-        <div class="text">"By performing one's natural occupation, one worships the Creator... By such performance of work, a person easily attains perfection." — Gita 18.46. Your work in quantum computing, HPC, and trading is your worship. Do it with dedication.</div>
+        <div class="text" id="dailyInsight">By performing your natural work — quantum computing, HPC, trading — you worship the Creator. That is your path to perfection. (BG 18.46)</div>
     </div>
 </div>
 
-<!----------------------------------------->
-<!-- TAB: SCHEDULE -->
-<!----------------------------------------->
+<!-- --- SCHEDULE TAB --- -->
 <div id="tab-schedule" class="tab-content">
-    <div class="section-title"><span>📋</span> Daily Schedule (5:00 AM — 10:00 PM)</div>
-    <div class="text-xs mb-8">Tap checkbox ✅ when you complete a block. Stay disciplined!</div>
-    <div id="scheduleContainer" class="schedule-day"></div>
-    <button class="btn-primary mt-8" onclick="logScheduleToSheet()">📤 Log Today's Schedule to Google Sheet</button>
+    <div class="section-title">📋 Daily Schedule (5:00 AM – 10:00 PM)</div>
+    <div class="text-sm mb-6">Tap a block to mark it ✅ done</div>
+    <div id="scheduleList" class="schedule-day"></div>
+    <button class="btn-p mt-6" onclick="logSchedule()">📤 Log Schedule to Sheet</button>
 </div>
 
-<!----------------------------------------->
-<!-- TAB: POMODORO -->
-<!----------------------------------------->
+<!-- --- POMODORO TAB --- -->
 <div id="tab-pomodoro" class="tab-content">
     <div class="pomo-card">
-        <div class="pomo-label" id="pomoStateLabel">WORK SESSION</div>
-        <div class="pomo-timer work" id="pomoDisplay">25:00</div>
-        <div class="pomo-sessions">🍅 Completed: <span id="pomoCount">0</span> &nbsp;|&nbsp; Session <span id="pomoSessionNum">1</span>/4</div>
+        <div class="pomo-label" id="pomoLabel">WORK SESSION</div>
+        <div class="pomo-timer" id="pomoDisplay" style="color:#60a5fa">25:00</div>
+        <div class="text-xs mb-6">🍅 <span id="pomoCount">0</span> completed</div>
         <div class="pomo-controls">
-            <button class="pomo-btn start" id="pomoStartBtn" onclick="togglePomodoro()">▶ Start</button>
-            <button class="pomo-btn reset" onclick="resetPomodoro()">↺ Reset</button>
+            <button class="pomo-btn start" id="pomoBtn" onclick="togglePomo()">▶ Start</button>
+            <button class="pomo-btn reset" onclick="resetPomo()">↺ Reset</button>
         </div>
     </div>
-
-    <div class="section-title"><span>🎯</span> Focus on This Task</div>
-    <div class="add-task-form">
-        <input type="text" id="pomoFocusInput" placeholder="What will you focus on this pomodoro?">
-        <button onclick="setPomoFocus()">Set</button>
+    <div class="section-title">🎯 Focus for this Session</div>
+    <div class="flex">
+        <input type="text" id="pomoFocus" placeholder="e.g. Study Quantum Error Correction" style="flex:1;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px;color:#e2e8f0;font-size:12px;outline:none;">
+        <button class="btn-s" style="width:auto;padding:8px 14px;" onclick="setFocus()">Set</button>
     </div>
-    <div id="pomoFocusDisplay" class="insight-card" style="display:none;">
+    <div id="pomoFocusBox" class="insight-box mt-6" style="display:none;">
         <div class="title">🎯 Current Focus</div>
         <div class="text" id="pomoFocusText"></div>
     </div>
-
-    <div class="section-title"><span>🔥</span> Motivation for This Session</div>
-    <div class="motivation-bar" id="pomoMotivation">"The only way to do great work is to love what you do." — Steve Jobs</div>
+    <div class="motivation-bar mt-6" id="pomoMotivation">"The only way to do great work is to love what you do."</div>
 </div>
 
-<!----------------------------------------->
-<!-- TAB: TASKS -->
-<!----------------------------------------->
+<!-- --- TASKS TAB --- -->
 <div id="tab-tasks" class="tab-content">
-    <div class="section-title"><span>✅</span> Add Task</div>
+    <div class="section-title">✅ Add Task</div>
     <div class="add-task-form">
-        <input type="text" id="taskInput" placeholder="Enter a task...">
-        <select id="taskQuadrant">
+        <input type="text" id="taskInput" placeholder="Enter task...">
+        <select id="taskQuad">
             <option value="q1">🔴 Urgent & Important</option>
             <option value="q2">🔵 Not Urgent & Important</option>
-            <option value="q3">🟡 Urgent & Not Important</option>
-            <option value="q4">⚪ Not Urgent & Not Important</option>
+            <option value="q3">🟡 Urgent, Not Important</option>
+            <option value="q4">⚪ Not Urgent, Not Important</option>
         </select>
-        <button onclick="addTask()">+ Add</button>
+        <button onclick="addTask()">+</button>
     </div>
-
-    <div class="section-title"><span>📊</span> Eisenhower Matrix</div>
+    <div class="section-title">📊 Eisenhower Matrix</div>
     <div class="eisenhower-grid">
-        <div class="quadrant q1">
-            <h4>🔴 Do First (Urgent & Important)</h4>
-            <div id="q1-tasks"></div>
-        </div>
-        <div class="quadrant q2">
-            <h4>🔵 Schedule (Not Urgent & Important)</h4>
-            <div id="q2-tasks"></div>
-        </div>
-        <div class="quadrant q3">
-            <h4>🟡 Delegate (Urgent & Not Important)</h4>
-            <div id="q3-tasks"></div>
-        </div>
-        <div class="quadrant q4">
-            <h4>⚪ Eliminate (Not Urgent & Not Important)</h4>
-            <div id="q4-tasks"></div>
-        </div>
+        <div class="quadrant q1"><h4>🔴 Do First</h4><div id="q1-tasks"></div></div>
+        <div class="quadrant q2"><h4>🔵 Schedule</h4><div id="q2-tasks"></div></div>
+        <div class="quadrant q3"><h4>🟡 Delegate</h4><div id="q3-tasks"></div></div>
+        <div class="quadrant q4"><h4>⚪ Eliminate</h4><div id="q4-tasks"></div></div>
     </div>
-    <button class="btn-secondary mt-8" onclick="logTasksToSheet()">📤 Log Tasks to Google Sheet</button>
+    <button class="btn-s" onclick="logTasks()">📤 Log Tasks to Sheet</button>
 </div>
 
-<!----------------------------------------->
-<!-- TAB: HEALTH -->
-<!----------------------------------------->
+<!-- --- HEALTH TAB --- -->
 <div id="tab-health" class="tab-content">
-    <div class="section-title"><span>🩺</span> Health & Diabetes Tracker</div>
-
+    <div class="section-title">🩺 Health & Diabetes Tracker</div>
     <div class="health-grid">
-        <!-- Medicines -->
         <div class="health-item">
             <div class="label">💊 Janumet 50/500</div>
-            <div class="value"><span id="medCount">0</span>/2 <span class="unit">taken</span></div>
-            <div class="flex-row mt-8">
-                <button class="action-btn" id="medBtn1" onclick="takeMedicine(1)">☑ Dose 1</button>
-                <button class="action-btn" id="medBtn2" onclick="takeMedicine(2)">☑ Dose 2</button>
+            <div class="value"><span id="medDisp">0</span>/2</div>
+            <div class="flex mt-6">
+                <button class="small-btn" id="med1" onclick="takeMed(1)">☑ Dose 1</button>
+                <button class="small-btn" id="med2" onclick="takeMed(2)">☑ Dose 2</button>
             </div>
         </div>
-
-        <!-- Blood Sugar -->
         <div class="health-item">
-            <div class="label">🩸 Blood Sugar (mg/dL)</div>
-            <div class="value" id="sugarDisplay">--</div>
-            <div class="sugar-input-group mt-8">
-                <input type="number" id="sugarInput" placeholder="e.g., 120" style="flex:1;background:#1e293b;border:1px solid #334155;border-radius:6px;padding:6px;color:#e2e8f0;font-size:12px;outline:none;">
-                <button class="action-btn" onclick="logSugar()">Log</button>
-            </div>
-            <div class="text-xs mt-8" id="sugarAdvice"></div>
-        </div>
-
-        <!-- Water -->
-        <div class="health-item">
-            <div class="label">💧 Water Intake</div>
-            <div class="value"><span id="waterCount">0</span> <span class="unit">glasses</span></div>
-            <div class="mt-8">
-                <button class="action-btn" onclick="addWater()">+ 1 Glass (250ml)</button>
+            <div class="label">🩸 Blood Sugar</div>
+            <div class="value" id="sugarDisp">-- mg/dL</div>
+            <div class="input-row mt-6">
+                <input type="number" id="sugarInp" placeholder="e.g. 120" style="flex:1;">
+                <button class="small-btn" onclick="logSugar()" style="width:auto;padding:5px 12px;">Log</button>
             </div>
         </div>
-
-        <!-- Food / Diet -->
         <div class="health-item">
-            <div class="label">🍽️ Meal Log</div>
-            <div class="user-input-group mt-8">
-                <select id="mealType">
-                    <option value="Breakfast">Breakfast</option>
-                    <option value="Lunch">Lunch</option>
-                    <option value="Dinner">Dinner</option>
-                    <option value="Snack">Snack</option>
+            <div class="label">💧 Water</div>
+            <div class="value"><span id="waterDisp">0</span> glasses</div>
+            <button class="small-btn mt-6" onclick="addWater()">+ 1 Glass</button>
+        </div>
+        <div class="health-item">
+            <div class="label">🍽️ Meal</div>
+            <div class="input-row mt-6">
+                <select id="mealType" style="flex:1;">
+                    <option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option>
                 </select>
                 <input type="text" id="mealDesc" placeholder="What did you eat?" style="flex:2;">
             </div>
-            <button class="action-btn mt-8" onclick="logMeal()">Log Meal</button>
+            <button class="small-btn mt-6" onclick="logMeal()">Log Meal</button>
         </div>
     </div>
 
-    <!-- Exercise -->
-    <div class="distraction-form">
-        <div class="flex-between mb-8">
-            <span style="font-size:13px;font-weight:600;">🏃 Exercise Log</span>
-        </div>
-        <div class="flex-row">
-            <select id="exerciseType" style="flex:1;background:#1e293b;border:1px solid #334155;border-radius:6px;padding:8px;color:#e2e8f0;font-size:12px;outline:none;">
-                <option value="Morning Exercise">Morning Exercise</option>
-                <option value="Walking">Walking</option>
-                <option value="Yoga">Yoga</option>
-                <option value="Other">Other</option>
-            </select>
-            <input type="number" id="exerciseMin" placeholder="Minutes" style="width:70px;background:#1e293b;border:1px solid #334155;border-radius:6px;padding:6px;color:#e2e8f0;font-size:12px;outline:none;">
-            <button class="action-btn" onclick="logExercise()">Log ✅</button>
-        </div>
+    <div class="section-title">🏃 Exercise</div>
+    <div class="flex">
+        <select id="exType" style="flex:1;background:#1e293b;border:1px solid #334155;border-radius:6px;padding:8px;color:#e2e8f0;font-size:11px;">
+            <option>Morning Exercise</option><option>Walking</option><option>Yoga</option><option>Other</option>
+        </select>
+        <input type="number" id="exMin" placeholder="Min" style="width:60px;background:#1e293b;border:1px solid #334155;border-radius:6px;padding:8px;color:#e2e8f0;font-size:11px;">
+        <button class="small-btn" onclick="logExercise()" style="width:auto;padding:8px 14px;">Log ✅</button>
     </div>
 
-    <!-- Distraction & Desire Log -->
-    <div class="section-title"><span>⚠️</span> Distraction & Desire Log (Accountability)</div>
-    <div class="distraction-form">
-        <textarea id="distractionLog" placeholder="What distracted you? What lustrous desire pulled you away? How did you feel? Be honest — this is your mirror."></textarea>
-        <div class="flex-row mt-8">
-            <select id="distractionType" style="flex:1;background:#1e293b;border:1px solid #334155;border-radius:6px;padding:8px;color:#e2e8f0;font-size:12px;outline:none;">
-                <option value="distraction">🧠 Distraction</option>
-                <option value="desire">🔥 Lustrous Desire</option>
-                <option value="procrastination">🕒 Procrastination</option>
-                <option value="negative">💭 Negative Thought</option>
-                <option value="health">⚠️ Health Harm</option>
-            </select>
-            <button class="btn-primary" style="width:auto;padding:8px 16px;" onclick="logDistraction()">Log</button>
+    <div class="section-title mt-6">⚠️ Distraction & Desire Log</div>
+    <textarea id="distLog" placeholder="What distracted you? What desire pulled you away? Be honest..."></textarea>
+    <div class="flex mt-6">
+        <select id="distType" style="flex:1;background:#1e293b;border:1px solid #334155;border-radius:6px;padding:8px;color:#e2e8f0;font-size:11px;">
+            <option value="distraction">🧠 Distraction</option>
+            <option value="desire">🔥 Lustrous Desire</option>
+            <option value="procrastination">🕒 Procrastination</option>
+            <option value="negative">💭 Negative Thought</option>
+        </select>
+        <button class="btn-p" style="width:auto;padding:8px 14px;" onclick="logDistraction()">Log</button>
+    </div>
+
+    <div class="section-title mt-6">📋 Recent Logs</div>
+    <div class="log-view" id="logView">No logs yet. Start tracking!</div>
+</div>
+
+<!-- --- SETTINGS TAB --- -->
+<div id="tab-settings" class="tab-content">
+    <div class="section-title">⚙️ Google Sheet Setup</div>
+    <input type="text" id="gsUrl" placeholder="Paste your Google Apps Script Web App URL here" style="width:100%;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:10px;color:#e2e8f0;font-size:12px;outline:none;margin-bottom:8px;">
+    <button class="btn-p" onclick="saveSheetUrl()">💾 Save URL</button>
+    <div class="text-xs mt-6" id="gsStatus">Not connected yet</div>
+
+    <div class="section-title mt-6">📊 Local Data</div>
+    <button class="btn-s" onclick="clearData()">🗑️ Clear All Local Data</button>
+    <div class="text-xs mt-6">Data is stored in your browser and synced to Google Sheet when you log.</div>
+
+    <div class="section-title mt-6">📖 How to Use</div>
+    <div class="insight-box">
+        <div class="text">
+1. Your day is divided into 1.5hr blocks from 5AM–10PM<br>
+2. Tap blocks to mark them done<br>
+3. Use Pomodoro (25 min work) for deep focus<br>
+4. Log distractions honestly — this is your mirror<br>
+5. Take both Janumet doses daily<br>
+6. Log sugar weekly<br>
+7. Add tasks using Eisenhower Matrix<br>
+8. Connect Google Sheet for backup
         </div>
     </div>
-  
-// --- CONFIGURATION ---
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDMlz6nMdYCxJfbBow1W8_02C6iAhRqQmxbuqavIHP8a6Qe2cg_4AqxX-mcAntkioppw/exec"; // Get this after deploying Apps Script
+</div>
 
-// --- DATA MODELS ---
+<!-- ===== TAB BAR ===== -->
+<div class="tab-bar">
+    <button class="tab-item active" data-tab="tab-dashboard"><span class="tab-icon">📊</span>Dashboard</button>
+    <button class="tab-item" data-tab="tab-schedule"><span class="tab-icon">📋</span>Schedule</button>
+    <button class="tab-item" data-tab="tab-pomodoro"><span class="tab-icon">🍅</span>Pomodoro</button>
+    <button class="tab-item" data-tab="tab-tasks"><span class="tab-icon">✅</span>Tasks</button>
+    <button class="tab-item" data-tab="tab-health"><span class="tab-icon">🩺</span>Health</button>
+    <button class="tab-item" data-tab="tab-settings"><span class="tab-icon">⚙️</span>Settings</button>
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+// ===== CONFIGURATION =====
+let SHEET_URL = localStorage.getItem('sheetUrl') || '';
 let state = {
+    blocks: JSON.parse(localStorage.getItem('blocks')) || {},
     tasks: JSON.parse(localStorage.getItem('tasks')) || [],
-    water: parseInt(localStorage.getItem('water')) || 0,
     meds: JSON.parse(localStorage.getItem('meds')) || [false, false],
+    water: parseInt(localStorage.getItem('water')) || 0,
     pomos: parseInt(localStorage.getItem('pomos')) || 0,
-    streak: parseInt(localStorage.getItem('streak')) || 1,
     sugar: localStorage.getItem('sugar') || '--',
-    blocksChecked: JSON.parse(localStorage.getItem('blocksChecked')) || {}
+    logs: JSON.parse(localStorage.getItem('logs')) || [],
+    streak: parseInt(localStorage.getItem('streak')) || 1
 };
 
-// --- GITA VERSES (18.46 - 18.54) ---
-const gitaVerses = [
-    { s: "यत: प्रवृत्तिर्भूतानां येन सर्वमिदं ततम् | स्वकर्मणा तमभ्यर्च्य सिद्धिं विन्दति मानव: ||", t: "By performing one’s natural occupation, one worships the Creator... and attains perfection.", r: "18.46" },
-    { s: "श्रेयान्स्वधर्मो विगुण: परधर्मात्स्वनुष्ठितात् | स्वभावनियतं कर्म कुर्वन्नाप्नोति किल्बिषम् ||", t: "It is better to do your own duty imperfectly than another's perfectly. Work according to your nature.", r: "18.47" },
-    { s: "असक्तबुद्धि: सर्वत्र जितात्मा विगतस्पृह: | नैष्कर्म्यसिद्धिं परमां संन्यासेनाधिगच्छति ||", t: "One whose intellect is unattached, who has mastered the mind and is free from desires, attains perfection.", r: "18.49" },
-    { s: "विमुच्य निर्मम: शान्तो ब्रह्मभूयाय कल्पते ||", t: "Free from egotism, violence, arrogance, desire... one is fit for union with the Absolute.", r: "18.53" }
+// ===== GITA VERSES 18.46–18.54 =====
+const gita = [
+    { s: "यत: प्रवृत्तिर्भूतानां येन सर्वमिदं ततम् | स्वकर्मणा तमभ्यर्च्य सिद्धिं विन्दति मानवः ||",
+      t: "By performing one's natural occupation, one worships the Creator from whom all beings arise. By such work, one easily attains perfection.",
+      r: "BG 18.46" },
+    { s: "श्रेयान्स्वधर्मो विगुणः परधर्मात्स्वनुष्ठितात् | स्वभावनियतं कर्म कुर्वन्नाप्नोति किल्बिषम् ||",
+      t: "It is better to do your own duty imperfectly than another's duty perfectly. Do your natural work and you incur no sin.",
+      r: "BG 18.47" },
+    { s: "सहजं कर्म कौन्तेय सदोषमपि न त्यजेत् | सर्वारम्भा हि दोषेण धूमेनाग्निरिवावृताः ||",
+      t: "One should not abandon natural work even if it has defects. All endeavors are covered by some fault, as fire is by smoke.",
+      r: "BG 18.48" },
+    { s: "असक्तबुद्धिः सर्वत्र जितात्मा विगतस्पृहः | नैष्कर्म्यसिद्धिं परमां संन्यासेनाधिगच्छति ||",
+      t: "One whose intellect is unattached everywhere, who has mastered the self and is free from desires, attains the supreme perfection of freedom from action.",
+      r: "BG 18.49" },
+    { s: "बुद्ध्या विशुद्धया युक्तो धृत्यात्मानं नियम्य च | शब्दादीन्विषयांस्त्यक्त्वा रागद्वेषौ व्युदस्य च ||",
+      t: "Endowed with purified intellect, restraining the mind, abandoning sense objects, casting aside attraction and aversion...",
+      r: "BG 18.51" },
+    { s: "विविक्तसेवी लघ्वाशी यतवाक्कायमानसः | ध्यानयोगपरो नित्यं वैराग्यं समुपाश्रितः ||",
+      t: "One who relishes solitude, eats lightly, controls speech, body and mind, and is ever engaged in meditation with dispassion...",
+      r: "BG 18.52" },
+    { s: "अहङ्कारं बलं दर्पं कामं क्रोधं परिग्रहम् | विमुच्य निर्ममः शान्तो ब्रह्मभूयाय कल्पते ||",
+      t: "Free from egotism, violence, arrogance, desire, anger and possessiveness — one becomes peaceful and fit for union with Brahman.",
+      r: "BG 18.53" },
+    { s: "ब्रह्मभूतः प्रसन्नात्मा न शोचति न काङ्क्षति | समः सर्वेषु भूतेषु मद्भक्तिं लभते पराम् ||",
+      t: "Situated in Brahman, serene in spirit, neither grieving nor desiring, equally disposed to all beings — one attains supreme devotion unto Me.",
+      r: "BG 18.54" }
 ];
 
-// --- CORE FUNCTIONS ---
-function updateUI() {
-    document.getElementById('statWater').innerText = state.water;
-    document.getElementById('statTasksDone').innerText = state.tasks.filter(t => t.done).length;
-    document.getElementById('statPomos').innerText = state.pomos;
-    document.getElementById('sugarDisplay').innerText = state.sugar;
-    
-    // Update Progress Bar
-    const totalBlocks = 11; 
-    const checkedCount = Object.values(state.blocksChecked).filter(v => v).length;
-    document.getElementById('progressBlocks').innerText = `${checkedCount} / ${totalBlocks}`;
-    document.getElementById('progressBar').style.width = (checkedCount / totalBlocks * 100) + "%";
-}
+// ===== SCHEDULE BLOCKS (5AM–10PM, 1.5hr intervals) =====
+const scheduleBlocks = [
+    { id:'b01', time:'05:00–05:30', activity:'🌅 Rise & Morning Routine',        sub:'Warm water, freshen up. No phone for 30 min.' },
+    { id:'b02', time:'05:30–06:30', activity:'🏃 Morning Exercise',              sub:'Yoga / stretching / light cardio. Diabetic priority.' },
+    { id:'b03', time:'06:30–07:00', activity:'🧘 Meditation + Gita Reading',     sub:'BG 18.46–54. Set day intention.' },
+    { id:'b04', time:'07:00–07:30', activity:'🍽️ Breakfast + Janumet Dose 1',   sub:'Low GI food. Take Janumet 50/500 with meal.' },
+    { id:'b05', time:'07:30–09:00', activity:'💻 Quantum Computing Coding',      sub:'Deep work — Qiskit / quantum algorithms / GitHub.' },
+    { id:'b06', time:'09:00–09:30', activity:'📈 Pre-Market Prep',               sub:'Charts, news, trade plan setup before 9:30.' },
+    { id:'b07', time:'09:30–12:00', activity:'📊 Intraday Trading Session',      sub:'Execute trades. Strict SL/TP. No emotions.' },
+    { id:'b08', time:'12:00–12:30', activity:'🍽️ Lunch + Short Rest',           sub:'Light diabetic-friendly lunch. Short walk.' },
+    { id:'b09', time:'12:30–14:00', activity:'⚛️ Quantum Mechanics Study',       sub:'Condensed matter physics. Job interview prep.' },
+    { id:'b10', time:'14:00–15:30', activity:'🖥️ HPC Numerical Simulations',    sub:'Run R&D simulations. Document results.' },
+    { id:'b11', time:'15:30–17:00', activity:'📹 YouTube Channel Work',          sub:'Script / record / edit. Consistency = growth.' },
+    { id:'b12', time:'17:00–17:30', activity:'☕ Break + Janumet Dose 2',        sub:'Hydrate. Take second Janumet with light snack.' },
+    { id:'b13', time:'17:30–19:00', activity:'🌐 Webpage & Content Work',        sub:'Blog, portfolio, SEO, webpage updates.' },
+    { id:'b14', time:'19:00–19:30', activity:'🍽️ Dinner',                       sub:'Light meal. Avoid heavy carbs. Optional walk.' },
+    { id:'b15', time:'19:30–21:00', activity:'📚 Learn Something New',           sub:'Research papers, online courses, books.' },
+    { id:'b16', time:'21:00–21:30', activity:'📖 Revise Notes',                  sub:'Review today\'s learning. Spaced repetition.' },
+    { id:'b17', time:'21:30–22:00', activity:'🧘 Night Meditation & Reflection', sub:'Meditate. Write gratitude. Prepare for tomorrow.' },
+    { id:'b18', time:'22:00',       activity:'😴 Sleep',                         sub:'No screen. Lights off. Recover for tomorrow.' }
+];
 
-// --- POMODORO LOGIC ---
-let timer;
-let timeLeft = 25 * 60;
-let isRunning = false;
+// ===== MOTIVATION QUOTES =====
+const quotes = [
+    '"Discipline is choosing between what you want now and what you want most." — Augusta F. Kantra',
+    '"The future depends on what you do today." — Mahatma Gandhi',
+    '"Work is doing it. Discipline is doing it every day. Diligence is doing it well every day." — Dave Ramsey',
+    '"Success is nothing more than a few simple disciplines, practiced every day." — Jim Rohn',
+    '"If you are not willing to learn, no one can help you. If you are determined, no one can stop you." — Zig Ziglar',
+    '"Starting strong is good. Finishing strong is epic." — Robin Sharma',
+    '"Spectacular achievement is always preceded by unspectacular preparation." — R.H. Schuller',
+    '"Self-discipline begins with the mastery of your thoughts." — Napoleon Hill',
+    '"Your level of success is determined by your level of discipline and perseverance." — David Goggins',
+    '"The first victory great men won was over themselves." — Harry S. Truman',
+    '"I have no special talent. I am only passionately curious." — Albert Einstein',
+    '"The only way to do great work is to love what you do." — Steve Jobs',
+    '"Challenges are what make life interesting; overcoming them is what makes life meaningful."',
+    '"Do not whine. Do not complain. Work harder." — Joan Didion',
+    '"All growth depends upon activity. There is no development without effort, and effort means work." — Calvin Coolidge'
+];
 
-function togglePomodoro() {
-    if (isRunning) {
-        clearInterval(timer);
-        document.getElementById('pomoStartBtn').innerText = "▶ Start";
-    } else {
-        timer = setInterval(tick, 1000);
-        document.getElementById('pomoStartBtn').innerText = "⏸ Pause";
-    }
-    isRunning = !isRunning;
-}
+const pomoQuotes = [
+    '🔥 One Pomodoro closer to your goal. Your IIT friends work hard — you work with PURPOSE!',
+    '⚛️ 25 minutes of pure focus. This is your Sva-dharma in action. (BG 18.46)',
+    '🏹 Arjuna did not ask how long the battle would last. He fought. So must you.',
+    '🖥️ Each Pomodoro is a brick. Keep laying — your quantum career is being built RIGHT NOW.',
+    '🧘 Free from distraction, free from desire — just this task, this moment. (BG 18.53)',
+    '🔬 Your HPC simulations, your quantum code — this IS your worship. Stay focused.',
+    '💪 Your peers became IIT faculty through thousands of focused hours. YOUR hours start NOW.',
+    '🚀 Victory belongs to those who persist. 25 minutes. GO!',
+    '🌟 Control the mind with determination. (BG 18.51) Begin this session.',
+    '⚡ The vagabond who disciplines himself becomes the master. Begin.'
+];
 
-function tick() {
-    if (timeLeft <= 0) {
-        clearInterval(timer);
-        state.pomos++;
-        saveState();
-        alert("Pomodoro Finished! Worship through work complete.");
-        resetPomodoro();
-        return;
-    }
-    timeLeft--;
-    const mins = Math.floor(timeLeft / 60);
-    const secs = timeLeft % 60;
-    document.getElementById('pomoDisplay').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-}
+// ===== POMODORO STATE =====
+let pomoTimer  = null;
+let pomoSecs   = 25 * 60;
+let pomoIsWork = true;
+let pomoRun    = false;
 
-function resetPomodoro() {
-    clearInterval(timer);
-    timeLeft = 25 * 60;
-    isRunning = false;
-    document.getElementById('pomoDisplay').innerText = "25:00";
-    document.getElementById('pomoStartBtn').innerText = "▶ Start";
-}
-
-// --- DATA PERSISTENCE ---
+// ===== SAVE / LOAD STATE =====
 function saveState() {
-    localStorage.setItem('tasks', JSON.stringify(state.tasks));
-    localStorage.setItem('water', state.water);
-    localStorage.setItem('meds', JSON.stringify(state.meds));
-    localStorage.setItem('pomos', state.pomos);
-    localStorage.setItem('blocksChecked', JSON.stringify(state.blocksChecked));
-    localStorage.setItem('sugar', state.sugar);
+    localStorage.setItem('blocks', JSON.stringify(state.blocks));
+    localStorage.setItem('tasks',  JSON.stringify(state.tasks));
+    localStorage.setItem('meds',   JSON.stringify(state.meds));
+    localStorage.setItem('water',  state.water);
+    localStorage.setItem('pomos',  state.pomos);
+    localStorage.setItem('sugar',  state.sugar);
+    localStorage.setItem('logs',   JSON.stringify(state.logs));
+    localStorage.setItem('streak', state.streak);
+}
+
+// ===== UPDATE ALL UI =====
+function updateUI() {
+    // Stats
+    document.getElementById('sStreak').innerText = state.streak;
+    document.getElementById('sTasks').innerText  = state.tasks.filter(t => t.done).length;
+    document.getElementById('sPomos').innerText  = state.pomos;
+    document.getElementById('sWater').innerText  = state.water;
+
+    // Health tab displays
+    const medCount = state.meds.filter(Boolean).length;
+    const medEl = document.getElementById('medDisp');
+    if (medEl) medEl.innerText = medCount;
+    const sugarEl = document.getElementById('sugarDisp');
+    if (sugarEl) sugarEl.innerText = state.sugar === '--' ? '-- mg/dL' : state.sugar + ' mg/dL';
+    const waterEl = document.getElementById('waterDisp');
+    if (waterEl) waterEl.innerText = state.water;
+
+    // Dashboard quick stats
+    const ms = document.getElementById('medStatus');
+    if (ms) ms.innerText = medCount + '/2';
+    const ss = document.getElementById('sugarStatus');
+    if (ss) ss.innerText = state.sugar;
+
+    // Med buttons styling
+    [1, 2].forEach(d => {
+        const btn = document.getElementById('med' + d);
+        if (!btn) return;
+        if (state.meds[d - 1]) {
+            btn.innerText = '✅ Dose ' + d + ' Done';
+            btn.classList.add('done');
+        } else {
+            btn.innerText = '☑ Dose ' + d;
+            btn.classList.remove('done');
+        }
+    });
+
+    // Progress bar
+    const doneCount  = Object.values(state.blocks).filter(Boolean).length;
+    const totalCount = scheduleBlocks.length;
+    const pLabel = document.getElementById('progressLabel');
+    const pFill  = document.getElementById('progressFill');
+    if (pLabel) pLabel.innerText = doneCount + ' / ' + totalCount;
+    if (pFill)  pFill.style.width = ((doneCount / totalCount) * 100) + '%';
+
+    // Pomodoro count
+    const pcEl = document.getElementById('pomoCount');
+    if (pcEl) pcEl.innerText = state.pomos;
+
+    // Eisenhower Task Quadrants
+    ['q1','q2','q3','q4'].forEach(q => {
+        const el = document.getElementById(q + '-tasks');
+        if (!el) return;
+        el.innerHTML = '';
+        state.tasks.filter(t => t.quad === q).forEach(t => {
+            el.innerHTML += `
+            <div class="task-item ${t.done ? 'done' : ''}" onclick="toggleTask('${t.id}')">
+                <span>${t.done ? '✅' : '⬜'}</span>
+                <span style="flex:1;">${t.text}</span>
+                <span class="del" onclick="event.stopPropagation();deleteTask('${t.id}')">✕</span>
+            </div>`;
+        });
+    });
+
+    // Log View (Health Tab)
+    const logEl = document.getElementById('logView');
+    if (logEl) {
+        if (!state.logs || state.logs.length === 0) {
+            logEl.innerHTML = '<div class="log-entry">No logs yet. Start tracking!</div>';
+        } else {
+            logEl.innerHTML = [...state.logs].reverse().slice(0, 20).map(l =>
+                `<div class="log-entry">
+                    <span style="color:#60a5fa;">${l.time}</span>
+                    <span style="color:#f59e0b;"> [${l.cat}]</span>
+                    ${l.val}
+                </div>`
+            ).join('');
+        }
+    }
+}
+
+// ===== CLOCK + CURRENT BLOCK =====
+function updateClock() {
+    const now  = new Date();
+    const h    = now.getHours();
+    const m    = now.getMinutes().toString().padStart(2, '0');
+    document.getElementById('currentTime').innerText = h + ':' + m;
+
+    const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    document.getElementById('currentDate').innerText =
+        days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+
+    // Greeting
+    let gr = 'Good Morning';
+    if (h >= 12 && h < 17) gr = 'Good Afternoon';
+    else if (h >= 17 && h < 21) gr = 'Good Evening';
+    else if (h >= 21 || h < 5) gr = 'Good Night';
+    document.getElementById('greeting').innerText = gr + ', Dr. Mahato 🙏';
+
+    // Find current schedule block
+    const timeNum = h * 100 + parseInt(m);
+    let currentBlock = scheduleBlocks[0];
+    for (let i = 0; i < scheduleBlocks.length - 1; i++) {
+        const bTime = scheduleBlocks[i].time.split('–')[0];
+        const nTime = scheduleBlocks[i + 1].time.split('–')[0];
+        const bNum  = parseInt(bTime.replace(':', ''));
+        const nNum  = parseInt(nTime.replace(':', ''));
+        if (timeNum >= bNum && timeNum < nNum) { currentBlock = scheduleBlocks[i]; break; }
+        if (i === scheduleBlocks.length - 2 && timeNum >= bNum) currentBlock = scheduleBlocks[i + 1];
+    }
+
+    const cbTime = document.getElementById('cbTime');
+    const cbAct  = document.getElementById('cbAct');
+    if (cbTime) cbTime.innerText = currentBlock.time;
+    if (cbAct)  cbAct.innerHTML  = currentBlock.activity + '<br><span class="text-xs">' + currentBlock.sub + '</span>';
+
+    // Highlight current block row in schedule tab
+    scheduleBlocks.forEach(b => {
+        const row = document.getElementById('blk-' + b.id);
+        if (!row) return;
+        if (b.id === currentBlock.id) row.classList.add('active');
+        else row.classList.remove('active');
+    });
+}
+
+// ===== RENDER SCHEDULE =====
+function renderSchedule() {
+    const container = document.getElementById('scheduleList');
+    if (!container) return;
+    container.innerHTML = '';
+    scheduleBlocks.forEach(b => {
+        const done = state.blocks[b.id] || false;
+        container.innerHTML += `
+        <div class="time-block" id="blk-${b.id}" onclick="toggleBlock('${b.id}')">
+            <div class="time">${b.time}</div>
+            <div class="activity">
+                ${b.activity}
+                <span class="sub">${b.sub}</span>
+            </div>
+            <div class="block-check ${done ? 'done' : ''}" id="chk-${b.id}"></div>
+        </div>`;
+    });
+}
+
+function toggleBlock(id) {
+    state.blocks[id] = !state.blocks[id];
+    const chk = document.getElementById('chk-' + id);
+    if (chk) chk.className = 'block-check ' + (state.blocks[id] ? 'done' : '');
+    addLog('Schedule', id + (state.blocks[id] ? ' ✅ DONE' : ' ↩ UNDONE'));
+    saveState();
     updateUI();
 }
 
-// Initialize
-window.onload = () => {
-    const randomVerse = gitaVerses[Math.floor(Math.random() * gitaVerses.length)];
-    document.getElementById('gitaSanskrit').innerText = randomVerse.s;
-    document.getElementById('gitaTranslation').innerText = randomVerse.t;
-    document.getElementById('gitaRef').innerText = "BG " + randomVerse.r;
-    
-    // Tab Switching Logic
-    document.querySelectorAll('.tab-item').forEach(btn => {
-        btn.onclick = () => {
-            document.querySelectorAll('.tab-item, .tab-content').forEach(el => el.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(btn.dataset.tab).classList.add('active');
-        };
-    });
+// ===== POMODORO =====
+function togglePomo() {
+    if (pomoRun) {
+        clearInterval(pomoTimer);
+        pomoRun = false;
+        document.getElementById('pomoBtn').innerText = '▶ Start';
+    } else {
+        pomoRun = true;
+        document.getElementById('pomoBtn').innerText = '⏸ Pause';
+        // Random motivation on start
+        document.getElementById('pomoMotivation').innerText =
+            pomoQuotes[Math.floor(Math.random() * pomoQuotes.length)];
+
+        pomoTimer = setInterval(() => {
+            if (pomoSecs <= 0) {
+                clearInterval(pomoTimer);
+                pomoRun = false;
+                document.getElementById('pomoBtn').innerText = '▶ Start';
+
+                if (pomoIsWork) {
+                    state.pomos++;
+                    saveState();
+                    updateUI();
+                    const msg = '🍅 Pomodoro Complete!\n\n' +
+                        pomoQuotes[Math.floor(Math.random() * pomoQuotes.length)] +
+                        '\n\nSessions completed: ' + state.pomos;
+                    alert(msg);
+                    // Start break
+                    pomoIsWork = false;
+                    pomoSecs   = 5 * 60;
+                    document.getElementById('pomoLabel').innerText = '☕ SHORT BREAK';
+                    document.getElementById('pomoDisplay').style.color = '#22c55e';
+                    sendToSheet({ category: 'Pomodoro', value: 'Session ' + state.pomos + ' completed', date: new Date().toISOString() });
+                } else {
+                    pomoIsWork = true;
+                    pomoSecs   = 25 * 60;
+                    document.getElementById('pomoLabel').innerText = 'WORK SESSION';
+                    document.getElementById('pomoDisplay').style.color = '#60a5fa';
+                    alert('Break over! 💪 Time to focus. Your quantum future awaits!');
+                }
+                document.getElementById('pomoDisplay').innerText = pomoIsWork ? '25:00' : '05:00';
+                return;
+            }
+            pomoSecs--;
+            const mm = Math.floor(pomoSecs / 60).toString().padStart(2, '0');
+            const ss = (pomoSecs % 60).toString().padStart(2, '0');
+            document.getElementById('pomoDisplay').innerText = mm + ':' + ss;
+        }, 1000);
+    }
+}
+
+function resetPomo() {
+    clearInterval(pomoTimer);
+    pomoRun    = false;
+    pomoIsWork = true;
+    pomoSecs   = 25 * 60;
+    document.getElementById('pomoDisplay').innerText  = '25:00';
+    document.getElementById('pomoDisplay').style.color = '#60a5fa';
+    document.getElementById('pomoLabel').innerText    = 'WORK SESSION';
+    document.getElementById('pomoBtn').innerText      = '▶ Start';
+}
+
+function setFocus() {
+    const txt = document.getElementById('pomoFocus').value.trim();
+    if (!txt) return;
+    document.getElementById('pomoFocusText').innerText   = txt;
+    document.getElementById('pomoFocusBox').style.display = 'block';
+    addLog('Focus Set', txt);
+    saveState();
+}
+
+// ===== TASKS =====
+function addTask() {
+    const text = document.getElementById('taskInput').value.trim();
+    const quad = document.getElementById('taskQuad').value;
+    if (!text) { alert('Please enter a task!'); return; }
+    state.tasks.push({ id: Date.now().toString(), text, quad, done: false });
+    document.getElementById('taskInput').value = '';
+    addLog('Task Added', '[' + quad.toUpperCase() + '] ' + text);
+    saveState();
     updateUI();
-};
+    sendToSheet({ category: 'Task Added', value: '[' + quad + '] ' + text, date: new Date().toISOString() });
+}
+
+function toggleTask(id) {
+    const task = state.tasks.find(t => t.id === id);
+    if (!task) return;
+    task.done = !task.done;
+    addLog('Task ' + (task.done ? 'DONE ✅' : 'Undone'), task.text);
+    saveState();
+    updateUI();
+    if (task.done) sendToSheet({ category: 'Task Completed', value: task.text, date: new Date().toISOString() });
+}
+
+function deleteTask(id) {
+    const task = state.tasks.find(t => t.id === id);
+    if (!task) return;
+    if (!confirm('Delete task: "' + task.text + '"?')) return;
+    state.tasks = state.tasks.filter(t => t.id !== id);
+    saveState();
+    updateUI();
+}
+
+// ===== HEALTH =====
+function takeMed(dose) {
+    if (state.meds[dose - 1]) { alert('Dose ' + dose + ' already taken today ✅'); return; }
+    state.meds[dose - 1] = true;
+    addLog('💊 Medicine', 'Janumet 50/500 Dose ' + dose + ' taken ✅');
+    saveState();
+    updateUI();
+    sendToSheet({ category: 'Medicine', value: 'Janumet Dose ' + dose + ' taken', date: new Date().toISOString() });
+    alert('✅ Janumet Dose ' + dose + ' logged!\n\nGood job keeping your health on track, Dr. Mahato.');
+}
+
+function logSugar() {
+    const val = document.getElementById('sugarInp').value.trim();
+    if (!val) { alert('Enter your blood sugar value'); return; }
+    const num = parseInt(val);
+    let advice = '';
+    if      (num < 70)  advice = '🔴 TOO LOW! Eat immediately!';
+    else if (num <= 140) advice = '✅ Normal range. Great control!';
+    else if (num <= 200) advice = '🟡 Slightly high. Drink water, walk 15 min.';
+    else                 advice = '🔴 HIGH! Check meds. Consider calling doctor.';
+
+    state.sugar = val;
+    addLog('🩸 Sugar', val + ' mg/dL — ' + advice);
+    saveState();
+    updateUI();
+    sendToSheet({ category: 'Blood Sugar', value: val + ' mg/dL', advice, date: new Date().toISOString() });
+    document.getElementById('sugarInp').value = '';
+    alert('🩸 Sugar Logged: ' + val + ' mg/dL\n\n' + advice);
+}
+
+function addWater() {
+    state.water++;
+    addLog('💧 Water', state.water + ' glasses total today');
+    saveState();
+    updateUI();
+    if (state.water === 8) alert('🎉 Excellent! 8 glasses reached. Well hydrated for the day!');
+    sendToSheet({ category: 'Water', value: state.water + ' glasses', date: new Date().toISOString() });
+}
+
+function logMeal() {
+    const type = document.getElementById('mealType').value;
+    const desc = document.getElementById('mealDesc').value.trim();
+    if (!desc) { alert('Describe what you ate'); return; }
+    addLog('🍽️ ' + type, desc);
+    saveState();
+    updateUI();
+    sendToSheet({ category: 'Meal - ' + type, value: desc, date: new Date().toISOString() });
+    document.getElementById('mealDesc').value = '';
+    alert('✅ ' + type + ' logged!');
+}
+
+function logExercise() {
+    const type = document.getElementById('exType').value;
+    const mins = document.getElementById('exMin').value;
+    if (!mins) { alert('Enter minutes of exercise'); return; }
+    addLog('🏃 Exercise', type + ' — ' + mins + ' minutes');
+    saveState();
+    updateUI();
+    sendToSheet({ category: 'Exercise', value: type + ' ' + mins + ' min', date: new Date().toISOString() });
+    document.getElementById('exMin').value = '';
+    alert('✅ Exercise logged: ' + type + ' ' + mins + ' min\n\nGreat work on your health!');
+}
+
+function logDistraction() {
+    const text = document.getElementById('distLog').value.trim();
+    const type = document.getElementById('distType').value;
+    if (!text) { alert('Describe what distracted you. Be honest — this is your mirror.'); return; }
+    addLog('⚠️ ' + type, text);
+    saveState();
+    updateUI();
+    sendToSheet({ category: type, value: text, date: new Date().toISOString() });
+    document.getElementById('distLog').value = '';
+    alert('Logged ✅\n\n"Free from desire, arrogance and anger, one attains peace." (BG 18.53)\n\nAcknowledge it. Forgive yourself. Refocus now.');
+}
+
+function logReflection() {
+    const text = document.getElementById('dailyReflect').value.trim();
+    if (!text) { alert('Write your reflection first'); return; }
+    addLog('📝 Reflection', text);
+    saveState();
+    updateUI();
+    sendToSheet({ category: 'Daily Reflection', value: text, date: new Date().toISOString() });
+    document.getElementById('dailyReflect').value = '';
+    alert('✅ Reflection saved and synced to Google Sheet!');
+}
+
+function logSchedule() {
+    const done = Object.entries(state.blocks).filter(([k, v]) => v).map(([k]) => k);
+    const val  = done.length + '/' + scheduleBlocks.length + ' blocks done: ' + done.join(', ');
+    sendToSheet({ category: 'Schedule Summary', value: val, date: new Date().toISOString() });
+    alert('✅ Today\'s schedule logged to Google Sheet!');
+}
+
+function logTasks() {
+    const done = state.tasks.filter(t =>  t.done).map(t => t.text).join(' | ') || 'None';
+    const pend = state.tasks.filter(t => !t.done).map(t => t.text).join(' | ') || 'None';
+    sendToSheet({ category: 'Tasks Completed', value: done, date: new Date().toISOString() });
+    sendToSheet({ category: 'Tasks Pending',   value: pend, date: new Date().toISOString() });
+    alert('✅ Tasks logged to Google Sheet!');
+}
+
+// ===== LOG HELPER =====
+function addLog(cat, val) {
+    const now  = new Date();
+    const time = now.getHours() + ':' + now.getMinutes().toString().padStart(2, '0');
+    if (!state.logs) state.logs = [];
+    state.logs.push({ time, cat, val });
+    if (state.logs.length > 150) state.logs = state.logs.slice(-150);
+}
+
+// ===== GOOGLE SHEET SENDER =====
+function sendToSheet(data) {
+    if (!SHEET_URL) return;
+    fetch(SHEET_URL, {
+        method:  'POST',
+        mode:    'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(data)
+    }).catch(err => console.warn('Sheet sync error:', err));
+}
+
+// ===== SETTINGS =====
+function saveSheetUrl() {
+    const url = document.getElementById('gsUrl').value.trim();
+    if (!url) { alert('Paste your Google Apps Script URL first'); return; }
+    SHEET_URL = url;
+    localStorage.setItem('sheetUrl', url);
+    document.getElementById('gsStatus').innerText = '✅ Connected! Data will sync to Sheet.';
+    document.getElementById('gsStatus').style.color = '#22c55e';
+    alert('✅ Google Sheet URL saved successfully!');
+}
+
+function clearData() {
+    if (!confirm('⚠️ This will delete ALL local data. This cannot be undone. Continue?')) return;
+    localStorage.clear();
+    location.reload();
+}
+
+// ===== TAB SWITCHING =====
+function initTabs() {
+    document.querySelectorAll('.tab-item').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.tab-item').forEach(b  => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            const tabId = this.getAttribute('data-tab');
+            const tabEl = document.getElementById(tabId);
+            if (tabEl) tabEl.classList.add('active');
+        });
+    });
+}
+
+// ===== DAILY RESET =====
+function checkDailyReset() {
+    const today   = new Date().toDateString();
+    const lastDay = localStorage.getItem('lastDay');
+    if (lastDay && lastDay !== today) {
+        // New day — reset daily data but keep streak/tasks/logs
+        state.meds   = [false, false];
+        state.water  = 0;
+        state.blocks = {};
+        state.streak = (state.streak || 0) + 1;
+    }
+    localStorage.setItem('lastDay', today);
+    saveState();
+}
+
+// ===== APP INIT =====
+window.addEventListener('load', function() {
+
+    // 1. Daily reset check
+    checkDailyReset();
+
+    // 2. Init tabs — MUST be first
+    initTabs();
+
+    // 3. Gita verse of the day (rotates by date)
+    const vIdx = new Date().getDate() % gita.length;
+    document.getElementById('gitaS').innerText = gita[vIdx].s;
+    document.getElementById('gitaT').innerText = gita[vIdx].t;
+    document.getElementById('gitaR').innerText = '— ' + gita[vIdx].r;
+
+    // 4. Motivation quote (rotates by hour)
+    const qIdx = new Date().getHours() % quotes.length;
+    document.getElementById('motQuote').innerText     = quotes[qIdx];
+    document.getElementById('pomoMotivation').innerText = pomoQuotes[0];
+
+    // 5. Render schedule
+    renderSchedule();
+
+    // 6. Clock — start ticking
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // 7. Restore Google Sheet URL
+    if (SHEET_URL) {
+        const gsEl  = document.getElementById('gsUrl');
+        const gsSt  = document.getElementById('gsStatus');
+        if (gsEl) gsEl.value = SHEET_URL;
+        if (gsSt) { gsSt.innerText = '✅ Connected'; gsSt.style.color = '#22c55e'; }
+    }
+
+    // 8. Request notification permission for Pomodoro alerts
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
+
+    // 9. Update all UI
+    updateUI();
+
+    console.log('✅ Life Dashboard loaded. Jai Shri Krishna! 🙏');
+});
+</script>
+</body>
+</html>
