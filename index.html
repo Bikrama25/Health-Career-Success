@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dr. B.K. Mahato — Life Transformation Dashboard</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="CS_MIB-Icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Life Dashboard">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e1a;
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 12px 12px 100px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+        /* --- Header --- */
+        .header {
+            text-align: center;
+            padding: 16px 0 8px;
+            margin-bottom: 12px;
+        }
+        .header h1 { font-size: 14px; color: #94a3b8; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; }
+        .time-display { font-size: 42px; font-weight: 700; color: #f8fafc; line-height: 1.1; margin: 4px 0; }
+        .greeting { font-size: 16px; color: #60a5fa; margin-bottom: 6px; }
+        .date-display { font-size: 12px; color: #64748b; }
+
+        /* --- Gita Verse --- */
+        .gita-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+        .gita-card .sanskrit { font-size: 16px; color: #fbbf24; font-style: italic; margin-bottom: 8px; line-height: 1.6; }
+        .gita-card .translation { font-size: 13px; color: #cbd5e1; line-height: 1.5; }
+        .gita-card .ref { font-size: 11px; color: #64748b; margin-top: 6px; }
+
+        /* --- Motivational Quote --- */
+        .motivation-bar {
+            background: linear-gradient(90deg, #1e3a5f, #0f172a);
+            border-left: 3px solid #60a5fa;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            font-size: 13px;
+            color: #93c5fd;
+            font-style: italic;
+        }
+
+        /* --- Section Title --- */
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin: 16px 0 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title span { font-size: 16px; }
+
+        /* --- Stats Grid --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+        .stat-card {
+            background: #1e293b;
+            border-radius: 10px;
+            padding: 10px 6px;
+            text-align: center;
+            border: 1px solid #2d3a50;
+        }
+        .stat-card .num { font-size: 20px; font-weight: 700; color: #60a5fa; }
+        .stat-card .label { font-size: 9px; color: #94a3b8; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
+
+        /* --- Schedule --- */
+        .schedule-day {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+        .time-block {
+            display: flex;
+            align-items: center;
+            background: #111827;
+            border-radius: 10px;
+            padding: 10px 12px;
+            border: 1px solid #1e293b;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+        .time-block.active {
+            border-color: #60a5fa;
+            background: #1a2744;
+            box-shadow: 0 0 12px rgba(96,165,250,0.15);
+        }
+        .time-block.past { opacity: 0.5; }
+        .time-block .time { font-size: 11px; color: #64748b; min-width: 48px; font-weight: 600; }
+        .time-block .activity { flex: 1; font-size: 13px; color: #e2e8f0; }
+        .time-block .activity .sub { font-size: 10px; color: #94a3b8; display: block; }
+        .time-block .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .time-block .status-dot.pending { background: #334155; }
+        .time-block .status-dot.done { background: #22c55e; }
+        .time-block .status-dot.current { background: #60a5fa; animation: pulse 1.5s infinite; }
+        .time-block .status-dot.missed { background: #ef4444; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        .block-check { width: 18px; height: 18px; border-radius: 4px; border: 2px solid #475569; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.2s; }
+        .block-check.checked { background: #22c55e; border-color: #22c55e; }
+        .block-check.checked::after { content: '✓'; color: #fff; font-size: 12px; font-weight: 700; }
+
+        /* --- Pomodoro --- */
+        .pomo-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+        .pomo-timer {
+            font-size: 56px;
+            font-weight: 700;
+            color: #f8fafc;
+            font-variant-numeric: tabular-nums;
+            margin: 8px 0;
+        }
+        .pomo-timer.work { color: #60a5fa; }
+        .pomo-timer.break { color: #22c55e; }
+        .pomo-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; }
+        .pomo-controls { display: flex; justify-content: center; gap: 12px; margin-top: 12px; }
+        .pomo-btn {
+            padding: 10px 24px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .pomo-btn.start { background: #2563eb; color: #fff; }
+        .pomo-btn.start:hover { background: #1d4ed8; }
+        .pomo-btn.reset { background: #334155; color: #94a3b8; }
+        .pomo-btn.reset:hover { background: #475569; }
+        .pomo-btn:active { transform: scale(0.95); }
+        .pomo-sessions { font-size: 12px; color: #64748b; margin-top: 8px; }
+
+        /* --- Task Manager (Eisenhower) --- */
+        .eisenhower-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+        .quadrant {
+            background: #111827;
+            border-radius: 10px;
+            padding: 10px;
+            border: 1px solid #1e293b;
+            min-height: 100px;
+        }
+        .quadrant h4 { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .quadrant.q1 { border-top: 3px solid #ef4444; }
+        .quadrant.q1 h4 { color: #ef4444; }
+        .quadrant.q2 { border-top: 3px solid #60a5fa; }
+        .quadrant.q2 h4 { color: #60a5fa; }
+        .quadrant.q3 { border-top: 3px solid #f59e0b; }
+        .quadrant.q3 h4 { color: #f59e0b; }
+        .quadrant.q4 { border-top: 3px solid #64748b; }
+        .quadrant.q4 h4 { color: #64748b; }
+
+        .task-item {
+            background: #1e293b;
+            border-radius: 6px;
+            padding: 6px 8px;
+            margin-bottom: 4px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .task-item.done { opacity: 0.5; text-decoration: line-through; }
+        .task-item .task-check { width: 14px; height: 14px; border-radius: 3px; border: 2px solid #475569; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .task-item .task-check.checked { background: #22c55e; border-color: #22c55e; }
+        .task-item .task-check.checked::after { content: '✓'; color: #fff; font-size: 9px; font-weight: 700; }
+        .task-item .del-task { margin-left: auto; color: #ef4444; font-size: 14px; cursor: pointer; opacity: 0.5; }
+        .task-item .del-task:hover { opacity: 1; }
+
+        .add-task-form {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .add-task-form input {
+            flex: 1;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 8px 10px;
+            color: #e2e8f0;
+            font-size: 13px;
+            outline: none;
+        }
+        .add-task-form input:focus { border-color: #60a5fa; }
+        .add-task-form select {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 8px;
+            color: #e2e8f0;
+            font-size: 11px;
+            outline: none;
+        }
+        .add-task-form button {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .add-task-form button:active { transform: scale(0.95); }
+
+        /* --- Health --- */
+        .health-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .health-item {
+            background: #111827;
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid #1e293b;
+        }
+        .health-item .label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+        .health-item .value { font-size: 16px; font-weight: 600; color: #f1f5f9; }
+        .health-item .unit { font-size: 11px; color: #64748b; }
+        .health-item .action-btn {
+            margin-top: 6px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: #60a5fa;
+            font-size: 11px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .health-item .action-btn.taken { background: #064e3b; border-color: #22c55e; color: #22c55e; }
+
+        /* --- User Input --- */
+        .user-input-group {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .user-input-group input, .user-input-group select {
+            flex: 1;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 6px 8px;
+            color: #e2e8f0;
+            font-size: 12px;
+            outline: none;
+        }
+        .user-input-group input:focus { border-color: #60a5fa; }
+
+        /* --- Distraction Log --- */
+        .distraction-form {
+            background: #111827;
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid #1e293b;
+            margin-bottom: 14px;
+        }
+        .distraction-form textarea {
+            width: 100%;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 8px 10px;
+            color: #e2e8f0;
+            font-size: 12px;
+            outline: none;
+            resize: vertical;
+            min-height: 50px;
+            font-family: inherit;
+        }
+        .distraction-form textarea:focus { border-color: #60a5fa; }
+
+        /* --- Buttons --- */
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+        }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-secondary {
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 12px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* --- Log View --- */
+        .log-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #111827;
+            border-radius: 10px;
+            padding: 8px;
+            margin-bottom: 14px;
+        }
+        .log-entry {
+            font-size: 11px;
+            padding: 6px 8px;
+            border-bottom: 1px solid #1e293b;
+            color: #94a3b8;
+        }
+        .log-entry:last-child { border-bottom: none; }
+        .log-entry .log-time { color: #64748b; font-size: 10px; }
+
+        /* --- Google Sheet Config --- */
+        .config-section {
+            background: #111827;
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid #1e293b;
+            margin-bottom: 14px;
+        }
+        .config-section input {
+            width: 100%;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 8px 10px;
+            color: #e2e8f0;
+            font-size: 12px;
+            outline: none;
+            margin-bottom: 6px;
+        }
+        .config-section input:focus { border-color: #60a5fa; }
+
+        /* --- Tabs --- */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0f172a;
+            border-top: 1px solid #1e293b;
+            display: flex;
+            padding: 6px 0 env(safe-area-inset-bottom, 6px);
+            z-index: 100;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 6px 4px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
+            background: none;
+            color: #64748b;
+        }
+        .tab-item.active { color: #60a5fa; }
+        .tab-item .tab-icon { font-size: 20px; display: block; }
+        .tab-item .tab-label { font-size: 9px; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* --- Insights --- */
+        .insight-card {
+            background: linear-gradient(135deg, #1e3a5f, #0f172a);
+            border: 1px solid #2d4a7a;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+        }
+        .insight-card .title { font-size: 13px; font-weight: 600; color: #93c5fd; margin-bottom: 4px; }
+        .insight-card .text { font-size: 12px; color: #cbd5e1; line-height: 1.5; }
+
+        /* --- Misc --- */
+        .flex-row { display: flex; gap: 8px; align-items: center; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .mt-8 { margin-top: 8px; }
+        .mb-8 { margin-bottom: 8px; }
+        .text-center { text-align: center; }
+        .text-xs { font-size: 11px; color: #64748b; }
+        .gap-4 { gap: 4px; }
+        .hidden { display: none; }
+
+        .water-glass {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            cursor: pointer;
+        }
+        .water-glass .glass { font-size: 18px; opacity: 0.3; }
+        .water-glass .glass.filled { opacity: 1; }
+
+        .sugar-input-group {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .streak-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #1c1917;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!----------------------------------------->
+<!-- HEADER -->
+<!----------------------------------------->
+<div class="header">
+    <h1>🔥 Life Transformation Dashboard</h1>
+    <div class="greeting" id="greeting">Good Morning, Dr. Mahato</div>
+    <div class="time-display" id="currentTime">00:00</div>
+    <div class="date-display" id="currentDate">Loading...</div>
+</div>
+
+<!----------------------------------------->
+<!-- TAB BAR -->
+<!----------------------------------------->
+<div class="tab-bar">
+    <button class="tab-item active" data-tab="tab-dashboard">
+        <span class="tab-icon">📊</span>
+        <span class="tab-label">Dashboard</span>
+    </button>
+    <button class="tab-item" data-tab="tab-schedule">
+        <span class="tab-icon">📋</span>
+        <span class="tab-label">Schedule</span>
+    </button>
+    <button class="tab-item" data-tab="tab-pomodoro">
+        <span class="tab-icon">🍅</span>
+        <span class="tab-label">Pomodoro</span>
+    </button>
+    <button class="tab-item" data-tab="tab-tasks">
+        <span class="tab-icon">✅</span>
+        <span class="tab-label">Tasks</span>
+    </button>
+    <button class="tab-item" data-tab="tab-health">
+        <span class="tab-icon">🩺</span>
+        <span class="tab-label">Health</span>
+    </button>
+    <button class="tab-item" data-tab="tab-settings">
+        <span class="tab-icon">⚙️</span>
+        <span class="tab-label">Settings</span>
+    </button>
+</div>
+
+<!----------------------------------------->
+<!-- TAB: DASHBOARD -->
+<!----------------------------------------->
+<div id="tab-dashboard" class="tab-content active">
+
+    <!-- Gita Verse -->
+    <div class="gita-card" id="gitaCard">
+        <div class="sanskrit" id="gitaSanskrit">Loading...</div>
+        <div class="translation" id="gitaTranslation">Loading...</div>
+        <div class="ref" id="gitaRef">— Bhagavad Gita</div>
+    </div>
+
+    <!-- Motivation -->
+    <div class="motivation-bar" id="motivationQuote">"Discipline is choosing between what you want now and what you want most."</div>
+
+    <!-- Quick Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="num" id="statStreak">0</div>
+            <div class="label">Day Streak 🔥</div>
+        </div>
+        <div class="stat-card">
+            <div class="num" id="statTasksDone">0</div>
+            <div class="label">Tasks ✅</div>
+        </div>
+        <div class="stat-card">
+            <div class="num" id="statPomos">0</div>
+            <div class="label">Pomodoros 🍅</div>
+        </div>
+        <div class="stat-card">
+            <div class="num" id="statWater">0</div>
+            <div class="label">Water 💧</div>
+        </div>
+    </div>
+
+    <!-- Current Block -->
+    <div class="section-title"><span>⏰</span> Current Activity</div>
+    <div class="time-block active" id="currentBlockDisplay">
+        <div class="time" id="currentBlockTime">--:--</div>
+        <div class="activity" id="currentBlockActivity">Loading your schedule...</div>
+        <div class="status-dot current"></div>
+    </div>
+
+    <!-- Today's Progress -->
+    <div class="section-title"><span>📈</span> Today's Progress</div>
+    <div class="insight-card">
+        <div class="flex-between">
+            <span class="title">Blocks Completed</span>
+            <span id="progressBlocks">0 / 12</span>
+        </div>
+        <div style="background:#1e293b;border-radius:8px;height:8px;margin-top:6px;overflow:hidden;">
+            <div id="progressBar" style="background:linear-gradient(90deg,#2563eb,#22c55e);height:100%;width:0%;border-radius:8px;transition:width 0.5s;"></div>
+        </div>
+        <div class="text-xs mt-8">Medicines: <span id="medStatus">Not taken</span> &nbsp;|&nbsp; Sugar: <span id="sugarStatus">Not logged</span></div>
+    </div>
+
+    <!-- Quick Log Today -->
+    <div class="distraction-form">
+        <div class="flex-between mb-8">
+            <span style="font-size:13px;font-weight:600;">📝 Today's Reflection</span>
+        </div>
+        <textarea id="dailyReflection" placeholder="What did I achieve today? What distracted me? What desires pulled me away? Be honest with yourself..."></textarea>
+        <button class="btn-primary mt-8" onclick="logDailyReflection()">✍️ Save Reflection + Log to Sheet</button>
+    </div>
+
+    <!-- Insights -->
+    <div class="section-title"><span>💡</span> Daily Insight</div>
+    <div class="insight-card" id="dailyInsight">
+        <div class="title">Your Journey</div>
+        <div class="text">"By performing one's natural occupation, one worships the Creator... By such performance of work, a person easily attains perfection." — Gita 18.46. Your work in quantum computing, HPC, and trading is your worship. Do it with dedication.</div>
+    </div>
+</div>
+
+<!----------------------------------------->
+<!-- TAB: SCHEDULE -->
+<!----------------------------------------->
+<div id="tab-schedule" class="tab-content">
+    <div class="section-title"><span>📋</span> Daily Schedule (5:00 AM — 10:00 PM)</div>
+    <div class="text-xs mb-8">Tap checkbox ✅ when you complete a block. Stay disciplined!</div>
+    <div id="scheduleContainer" class="schedule-day"></div>
+    <button class="btn-primary mt-8" onclick="logScheduleToSheet()">📤 Log Today's Schedule to Google Sheet</button>
+</div>
+
+<!----------------------------------------->
+<!-- TAB: POMODORO -->
+<!----------------------------------------->
+<div id="tab-pomodoro" class="tab-content">
+    <div class="pomo-card">
+        <div class="pomo-label" id="pomoStateLabel">WORK SESSION</div>
+        <div class="pomo-timer work" id="pomoDisplay">25:00</div>
+        <div class="pomo-sessions">🍅 Completed: <span id="pomoCount">0</span> &nbsp;|&nbsp; Session <span id="pomoSessionNum">1</span>/4</div>
+        <div class="pomo-controls">
+            <button class="pomo-btn start" id="pomoStartBtn" onclick="togglePomodoro()">▶ Start</button>
+            <button class="pomo-btn reset" onclick="resetPomodoro()">↺ Reset</button>
+        </div>
+    </div>
+
+    <div class="section-title"><span>🎯</span> Focus on This Task</div>
+    <div class="add-task-form">
+        <input type="text" id="pomoFocusInput" placeholder="What will you focus on this pomodoro?">
+        <button onclick="setPomoFocus()">Set</button>
+    </div>
+    <div id="pomoFocusDisplay" class="insight-card" style="display:none;">
+        <div class="title">🎯 Current Focus</div>
+        <div class="text" id="pomoFocusText"></div>
+    </div>
+
+    <div class="section-title"><span>🔥</span> Motivation for This Session</div>
+    <div class="motivation-bar" id="pomoMotivation">"The only way to do great work is to love what you do." — Steve Jobs</div>
+</div>
+
+<!----------------------------------------->
+<!-- TAB: TASKS -->
+<!----------------------------------------->
+<div id="tab-tasks" class="tab-content">
+    <div class="section-title"><span>✅</span> Add Task</div>
+    <div class="add-task-form">
+        <input type="text" id="taskInput" placeholder="Enter a task...">
+        <select id="taskQuadrant">
+            <option value="q1">🔴 Urgent & Important</option>
+            <option value="q2">🔵 Not Urgent & Important</option>
+            <option value="q3">🟡 Urgent & Not Important</option>
+            <option value="q4">⚪ Not Urgent & Not Important</option>
+        </select>
+        <button onclick="addTask()">+ Add</button>
+    </div>
+
+    <div class="section-title"><span>📊</span> Eisenhower Matrix</div>
+    <div class="eisenhower-grid">
+        <div class="quadrant q1">
+            <h4>🔴 Do First (Urgent & Important)</h4>
+            <div id="q1-tasks"></div>
+        </div>
+        <div class="quadrant q2">
+            <h4>🔵 Schedule (Not Urgent & Important)</h4>
+            <div id="q2-tasks"></div>
+        </div>
+        <div class="quadrant q3">
+            <h4>🟡 Delegate (Urgent & Not Important)</h4>
+            <div id="q3-tasks"></div>
+        </div>
+        <div class="quadrant q4">
+            <h4>⚪ Eliminate (Not Urgent & Not Important)</h4>
+            <div id="q4-tasks"></div>
+        </div>
+    </div>
+    <button class="btn-secondary mt-8" onclick="logTasksToSheet()">📤 Log Tasks to Google Sheet</button>
+</div>
+
+<!----------------------------------------->
+<!-- TAB: HEALTH -->
+<!----------------------------------------->
+<div id="tab-health" class="tab-content">
+    <div class="section-title"><span>🩺</span> Health & Diabetes Tracker</div>
+
+    <div class="health-grid">
+        <!-- Medicines -->
+        <div class="health-item">
+            <div class="label">💊 Janumet 50/500</div>
+            <div class="value"><span id="medCount">0</span>/2 <span class="unit">taken</span></div>
+            <div class="flex-row mt-8">
+                <button class="action-btn" id="medBtn1" onclick="takeMedicine(1)">☑ Dose 1</button>
+                <button class="action-btn" id="medBtn2" onclick="takeMedicine(2)">☑ Dose 2</button>
+            </div>
+        </div>
+
+        <!-- Blood Sugar -->
+        <div class="health-item">
+            <div class="label">🩸 Blood Sugar (mg/dL)</div>
+            <div class="value" id="sugarDisplay">--</div>
+            <div class="sugar-input-group mt-8">
+                <input type="number" id="sugarInput" placeholder="e.g., 120" style="flex:1;background:#1e293b;border:1px solid #334155;border-radius:6px;padding:6px;color:#e2e8f0;font-size:12px;outline:none;">
+                <button class="action-btn" onclick="logSugar()">Log</button>
+            </div>
+            <div class="text-xs mt-8" id="sugarAdvice"></div>
+        </div>
+
+        <!-- Water -->
+        <div class="health-item">
+            <div class="label">💧 Water Intake</div>
+            <div class="value"><span id="waterCount">0</span> <span class="unit">glasses</span></div>
+            <div class="mt-8">
+                <button class="action-btn" onclick="addWater()">+ 1 Glass (250ml)</button>
+            </div>
+        </div>
+
+        <!-- Food / Diet -->
+        <div class="health-item">
+            <div class="label">🍽️ Meal Log</div>
+            <div class="user-input-group mt-8">
+                <select id="mealType">
+                    <option value="Breakfast">Breakfast</option>
+                    <option value="Lunch">Lunch</option>
+                    <option value="Dinner">Dinner</option>
+                    <option value="Snack">Snack</option>
+                </select>
+                <input type="text" id="mealDesc" placeholder="What did you eat?" style="flex:2;">
+            </div>
+            <button class="action-btn mt-8" onclick="logMeal()">Log Meal</button>
+        </div>
+    </div>
+
+    <!-- Exercise -->
+    <div class="distraction-form">
+        <div class="flex-between mb-8">
+            <span style="font-size:13px;font-weight:600;">🏃 Exercise Log</span>
+        </div>
+        <div class="flex-row">
+            <select id="exerciseType" style="flex:1;background:#1e293b;border:1px solid #334155;border-radius:6px;padding:8px;color:#e2e8f0;font-size:12px;outline:none;">
+                <option value="Morning Exercise">Morning Exercise</option>
+                <option value="Walking">Walking</option>
+                <option value="Yoga">Yoga</option>
+                <option value="Other">Other</option>
+            </select>
+            <input type="number" id="exerciseMin" placeholder="Minutes" style="width:70px;background:#1e293b;border:1px solid #334155;border-radius:6px;padding:6px;color:#e2e8f0;font-size:12px;outline:none;">
+            <button class="action-btn" onclick="logExercise()">Log ✅</button>
+        </div>
+    </div>
+
+    <!-- Distraction & Desire Log -->
+    <div class="section-title"><span>⚠️</span> Distraction & Desire Log (Accountability)</div>
+    <div class="distraction-form">
+        <textarea id="distractionLog" placeholder="What distracted you? What lustrous desire pulled you away? How did you feel? Be honest — this is your mirror."></textarea>
+        <div class="flex-row mt-8">
+            <select id="distractionType" style="flex:1;background:#1e293b;border:1px solid #334155;border-radius:6px;padding:8px;color:#e2e8f0;font-size:12px;outline:none;">
+                <option value="distraction">🧠 Distraction</option>
+                <option value="desire">🔥 Lustrous Desire</option>
+                <option value="procrastination">🕒 Procrastination</option>
+                <option value="negative">💭 Negative Thought</option>
+                <option value="health">⚠️ Health Harm</option>
+            </select>
+            <button class="btn-primary" style="width:auto;padding:8px 16px;" onclick="logDistraction()">Log</button>
+        </div>
+    </div>
+  
+// --- CONFIGURATION ---
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDMlz6nMdYCxJfbBow1W8_02C6iAhRqQmxbuqavIHP8a6Qe2cg_4AqxX-mcAntkioppw/exec"; // Get this after deploying Apps Script
+
+// --- DATA MODELS ---
+let state = {
+    tasks: JSON.parse(localStorage.getItem('tasks')) || [],
+    water: parseInt(localStorage.getItem('water')) || 0,
+    meds: JSON.parse(localStorage.getItem('meds')) || [false, false],
+    pomos: parseInt(localStorage.getItem('pomos')) || 0,
+    streak: parseInt(localStorage.getItem('streak')) || 1,
+    sugar: localStorage.getItem('sugar') || '--',
+    blocksChecked: JSON.parse(localStorage.getItem('blocksChecked')) || {}
+};
+
+// --- GITA VERSES (18.46 - 18.54) ---
+const gitaVerses = [
+    { s: "यत: प्रवृत्तिर्भूतानां येन सर्वमिदं ततम् | स्वकर्मणा तमभ्यर्च्य सिद्धिं विन्दति मानव: ||", t: "By performing one’s natural occupation, one worships the Creator... and attains perfection.", r: "18.46" },
+    { s: "श्रेयान्स्वधर्मो विगुण: परधर्मात्स्वनुष्ठितात् | स्वभावनियतं कर्म कुर्वन्नाप्नोति किल्बिषम् ||", t: "It is better to do your own duty imperfectly than another's perfectly. Work according to your nature.", r: "18.47" },
+    { s: "असक्तबुद्धि: सर्वत्र जितात्मा विगतस्पृह: | नैष्कर्म्यसिद्धिं परमां संन्यासेनाधिगच्छति ||", t: "One whose intellect is unattached, who has mastered the mind and is free from desires, attains perfection.", r: "18.49" },
+    { s: "विमुच्य निर्मम: शान्तो ब्रह्मभूयाय कल्पते ||", t: "Free from egotism, violence, arrogance, desire... one is fit for union with the Absolute.", r: "18.53" }
+];
+
+// --- CORE FUNCTIONS ---
+function updateUI() {
+    document.getElementById('statWater').innerText = state.water;
+    document.getElementById('statTasksDone').innerText = state.tasks.filter(t => t.done).length;
+    document.getElementById('statPomos').innerText = state.pomos;
+    document.getElementById('sugarDisplay').innerText = state.sugar;
+    
+    // Update Progress Bar
+    const totalBlocks = 11; 
+    const checkedCount = Object.values(state.blocksChecked).filter(v => v).length;
+    document.getElementById('progressBlocks').innerText = `${checkedCount} / ${totalBlocks}`;
+    document.getElementById('progressBar').style.width = (checkedCount / totalBlocks * 100) + "%";
+}
+
+// --- POMODORO LOGIC ---
+let timer;
+let timeLeft = 25 * 60;
+let isRunning = false;
+
+function togglePomodoro() {
+    if (isRunning) {
+        clearInterval(timer);
+        document.getElementById('pomoStartBtn').innerText = "▶ Start";
+    } else {
+        timer = setInterval(tick, 1000);
+        document.getElementById('pomoStartBtn').innerText = "⏸ Pause";
+    }
+    isRunning = !isRunning;
+}
+
+function tick() {
+    if (timeLeft <= 0) {
+        clearInterval(timer);
+        state.pomos++;
+        saveState();
+        alert("Pomodoro Finished! Worship through work complete.");
+        resetPomodoro();
+        return;
+    }
+    timeLeft--;
+    const mins = Math.floor(timeLeft / 60);
+    const secs = timeLeft % 60;
+    document.getElementById('pomoDisplay').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+function resetPomodoro() {
+    clearInterval(timer);
+    timeLeft = 25 * 60;
+    isRunning = false;
+    document.getElementById('pomoDisplay').innerText = "25:00";
+    document.getElementById('pomoStartBtn').innerText = "▶ Start";
+}
+
+// --- DATA PERSISTENCE ---
+function saveState() {
+    localStorage.setItem('tasks', JSON.stringify(state.tasks));
+    localStorage.setItem('water', state.water);
+    localStorage.setItem('meds', JSON.stringify(state.meds));
+    localStorage.setItem('pomos', state.pomos);
+    localStorage.setItem('blocksChecked', JSON.stringify(state.blocksChecked));
+    localStorage.setItem('sugar', state.sugar);
+    updateUI();
+}
+
+// Initialize
+window.onload = () => {
+    const randomVerse = gitaVerses[Math.floor(Math.random() * gitaVerses.length)];
+    document.getElementById('gitaSanskrit').innerText = randomVerse.s;
+    document.getElementById('gitaTranslation').innerText = randomVerse.t;
+    document.getElementById('gitaRef').innerText = "BG " + randomVerse.r;
+    
+    // Tab Switching Logic
+    document.querySelectorAll('.tab-item').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('.tab-item, .tab-content').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab).classList.add('active');
+        };
+    });
+    updateUI();
+};
